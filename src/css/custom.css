@@ -1,0 +1,923 @@
+/* ===================================================================
+ *  Vket 2026 Summer Diary – Custom Stylesheet
+ *
+ *   1. Theme Variables
+ *   2. Navbar
+ *   3. Sidebar
+ *   4. Document Content
+ *   5. Image Utilities
+ *   6. Step Gallery
+ *   7. Lightbox – Image
+ *   8. Lightbox – Video
+ *   9. Lightbox – Navigation (shared)
+ *  10. Image Comparison Slider
+ *  11. Progress Timeline
+ *  12. Footer
+ *  13. Animations
+ *  14. Responsive – Mobile
+ * =================================================================== */
+
+
+/* -------------------------------------------------------------------
+ *  1. Theme Variables
+ * ------------------------------------------------------------------- */
+
+:root {
+  --ifm-color-primary: #3d3832;
+  --ifm-color-primary-dark: #312d28;
+  --ifm-color-primary-darker: #2b2824;
+  --ifm-color-primary-darkest: #1d1a17;
+  --ifm-color-primary-light: #49443d;
+  --ifm-color-primary-lighter: #4f4a43;
+  --ifm-color-primary-lightest: #615b53;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --vket-accent: #8B7B5E;
+  --vket-accent-hover: #6b5d44;
+  --vket-accent-light: rgba(139, 123, 94, 0.08);
+  --vket-border: #d5d0c8;
+  --vket-border-light: #e8e3db;
+  --vket-text-muted: #999;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #D4BD8A;
+  --ifm-color-primary-dark: #cab079;
+  --ifm-color-primary-darker: #c5a971;
+  --ifm-color-primary-darkest: #b29350;
+  --ifm-color-primary-light: #deca9b;
+  --ifm-color-primary-lighter: #e3d0a3;
+  --ifm-color-primary-lightest: #f0e2c2;
+
+  --ifm-background-color: #1b1b1d;
+  --ifm-background-surface-color: #242526;
+
+  --ifm-link-color: #D4BD8A;
+  --ifm-navbar-link-hover-color: #f0e2c2;
+
+  --docusaurus-highlighted-code-line-bg: rgba(212, 189, 138, 0.12);
+
+  --vket-accent: #D4BD8A;
+  --vket-accent-hover: #f0e2c2;
+  --vket-accent-light: rgba(212, 189, 138, 0.08);
+  --vket-border: #505055;
+  --vket-border-light: #3a3a3e;
+  --vket-text-muted: #999;
+}
+
+
+/* -------------------------------------------------------------------
+ *  2. Navbar
+ * ------------------------------------------------------------------- */
+
+.navbar__items--right {
+  display: flex;
+  align-items: center;
+  padding-right: 16px;
+}
+
+div[class*='colorModeToggle'] {
+  display: flex;
+  align-items: center;
+  order: -1;
+}
+
+/* ── GitHub link ── */
+
+.header-github-link {
+  display: flex;
+  align-items: center;
+  padding: 0 8px !important;
+  font-size: 0;
+  line-height: 1;
+  border-left: 1px solid #ccc;
+  margin-left: 24px;
+  padding-left: 18px !important;
+}
+
+.header-github-link::before {
+  content: '';
+  width: 22px;
+  height: 22px;
+  display: block;
+  flex-shrink: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23333' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
+    no-repeat center;
+  background-size: 22px 22px;
+}
+
+.header-github-link:hover {
+  opacity: 0.6;
+}
+
+[data-theme='dark'] .header-github-link {
+  border-left-color: #444;
+}
+
+[data-theme='dark'] .header-github-link::before {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
+    no-repeat center;
+  background-size: 22px 22px;
+}
+
+/* ── Dark-mode toggle ── */
+
+button[class*='toggleButton'] {
+  position: relative !important;
+  flex-shrink: 0;
+  min-width: 40px;
+  width: 40px !important;
+  height: 22px !important;
+  border-radius: 11px !important;
+  background-color: #d5d0c8 !important;
+  padding: 0 !important;
+  border: none !important;
+  cursor: pointer;
+  transition: background-color 0.3s ease !important;
+  overflow: hidden !important;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cline x1='12' y1='1' x2='12' y2='3'/%3E%3Cline x1='12' y1='21' x2='12' y2='23'/%3E%3Cline x1='4.22' y1='4.22' x2='5.64' y2='5.64'/%3E%3Cline x1='18.36' y1='18.36' x2='19.78' y2='19.78'/%3E%3Cline x1='1' y1='12' x2='3' y2='12'/%3E%3Cline x1='21' y1='12' x2='23' y2='12'/%3E%3Cline x1='4.22' y1='19.78' x2='5.64' y2='18.36'/%3E%3Cline x1='18.36' y1='5.64' x2='19.78' y2='4.22'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/%3E%3C/svg%3E") !important;
+  background-position: 5px center, calc(100% - 5px) center !important;
+  background-size: 12px 12px, 10px 10px !important;
+  background-repeat: no-repeat !important;
+}
+
+button[class*='toggleButton']::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+button[class*='toggleButton'] svg {
+  display: none !important;
+}
+
+[data-theme='dark'] button[class*='toggleButton'] {
+  background-color: var(--vket-border) !important;
+}
+
+[data-theme='dark'] button[class*='toggleButton']::after {
+  transform: translateX(18px);
+}
+
+/* ── Dark-mode navbar ── */
+
+[data-theme='dark'] .navbar {
+  background-color: #1e1e20;
+  border-bottom: 1px solid #2e2e30;
+}
+
+[data-theme='dark'] .navbar__title {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .navbar__link:hover {
+  color: var(--vket-accent-hover);
+}
+
+
+/* -------------------------------------------------------------------
+ *  3. Sidebar
+ * ------------------------------------------------------------------- */
+
+.menu__link:hover {
+  background-color: var(--vket-accent-light);
+  border-radius: 4px;
+}
+
+.menu__link--active:not(.menu__link--sublist) {
+  color: #3d3832;
+  border-left-color: var(--vket-accent);
+}
+
+[data-theme='dark'] .menu__link--active:not(.menu__link--sublist) {
+  color: var(--vket-accent);
+  border-left-color: var(--vket-accent);
+}
+
+[data-theme='dark'] .menu__link:hover {
+  color: var(--vket-accent-hover);
+  background-color: var(--vket-accent-light);
+  border-radius: 4px;
+}
+
+.theme-doc-sidebar-item-category {
+  margin-top: 12px;
+}
+
+.menu__list-item-collapsible {
+  pointer-events: none;
+  user-select: none;
+}
+
+.menu__list-item-collapsible > * {
+  font-weight: 600 !important;
+  font-size: 0.92rem !important;
+  color: var(--vket-text-muted) !important;
+  background: transparent !important;
+}
+
+.theme-doc-sidebar-item-category > .menu__list {
+  padding-top: 1px;
+}
+
+.theme-doc-sidebar-item-category > .menu__list > .menu__list-item > .menu__link {
+  font-size: 0.85rem;
+}
+
+
+/* -------------------------------------------------------------------
+ *  4. Document Content
+ * ------------------------------------------------------------------- */
+
+/* ── Headings ── */
+
+.markdown h1 {
+  font-size: 2rem;
+}
+
+.markdown h2 {
+  font-size: 1.5rem;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--vket-border);
+}
+
+/* ── Lists ── */
+
+.markdown p + ul,
+.markdown p + ol {
+  margin-top: -0.85rem !important;
+}
+
+/* ── Tables ── */
+
+.markdown table th:first-child,
+.markdown table td:first-child {
+  min-width: 110px;
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+table thead tr {
+  border-bottom: 2px solid var(--vket-border);
+}
+
+[data-theme='dark'] table thead tr {
+  background-color: #222224;
+  border-bottom: 2px solid var(--vket-accent);
+}
+
+[data-theme='dark'] table tbody tr:nth-child(2n) {
+  background-color: #1f1f21;
+}
+
+.markdown table ul {
+  margin: 4px 0;
+  padding-left: 1.2em;
+}
+
+.markdown table li {
+  margin-bottom: 2px;
+}
+
+.markdown table li:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Details / Collapsible ── */
+
+details {
+  --docusaurus-details-decoration-color: var(--vket-border) !important;
+  border: 1px solid var(--vket-border) !important;
+  background-color: transparent;
+}
+
+details summary {
+  color: #3d3832;
+}
+
+details summary::marker {
+  color: var(--vket-accent);
+}
+
+details a {
+  color: #3d3832;
+  text-decoration: none;
+}
+
+details a:hover {
+  text-decoration: underline;
+}
+
+[data-theme='dark'] details {
+  --docusaurus-details-decoration-color: var(--vket-border) !important;
+  border-color: var(--vket-border) !important;
+}
+
+[data-theme='dark'] details summary {
+  color: var(--vket-accent);
+}
+
+[data-theme='dark'] details summary::marker {
+  color: var(--vket-accent);
+}
+
+[data-theme='dark'] details a {
+  color: var(--vket-accent);
+  text-decoration: none;
+}
+
+[data-theme='dark'] details a:hover {
+  color: var(--vket-accent-hover);
+  text-decoration: underline;
+}
+
+/* ── Alerts ── */
+
+[data-theme='dark'] .alert--info {
+  --ifm-alert-background-color: #1e2530;
+  --ifm-alert-border-color: #5090d0;
+}
+
+[data-theme='dark'] .alert--warning {
+  --ifm-alert-background-color: #24221a;
+  --ifm-alert-border-color: var(--vket-accent);
+}
+
+[data-theme='dark'] .alert--danger {
+  --ifm-alert-background-color: #2a1717;
+  --ifm-alert-border-color: #e05555;
+}
+
+/* ── Pagination ── */
+
+.pagination-nav__link:hover {
+  border-color: var(--vket-accent);
+  background-color: var(--vket-accent-light);
+}
+
+[data-theme='dark'] .pagination-nav__sublabel {
+  color: var(--vket-text-muted);
+}
+
+/* ── Table of contents ── */
+
+[data-theme='dark'] .table-of-contents__link--active {
+  color: var(--vket-accent);
+}
+
+[data-theme='dark'] .table-of-contents__link:hover {
+  color: var(--vket-accent-hover);
+}
+
+
+/* -------------------------------------------------------------------
+ *  5. Image Utilities
+ * ------------------------------------------------------------------- */
+
+.doc-img {
+  max-width: 800px;
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.doc-img-sm {
+  max-width: 200px;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.doc-img-md {
+  max-width: 480px;
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.doc-img-ml {
+  max-width: 600px;
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+/* --- Figure 圖片說明 --- */
+
+figure {
+  margin: 8px 0 16px;
+  padding: 0;
+  display: inline-block;
+  text-align: center;
+}
+
+figure img {
+  border-radius: 8px;
+  border: 1px solid var(--vket-border-light);
+  margin-bottom: 0 !important;
+}
+
+figure figcaption {
+  font-size: 0.8rem;
+  color: var(--ifm-color-primary);
+  font-weight: 500;
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* -------------------------------------------------------------------
+ *  6. Step Gallery
+ * ------------------------------------------------------------------- */
+
+/* ── Base (steps mode) ── */
+
+.step-gallery {
+  display: grid;
+  gap: 4px;
+  align-items: start;
+  margin: 24px 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.step-gallery-item {
+  text-align: center;
+  min-width: 0;
+}
+
+.step-gallery-item img,
+.step-gallery-item video {
+  width: 100%;
+  display: block;
+}
+
+.step-gallery-media {
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--vket-border-light);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.step-gallery-media:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='dark'] .step-gallery-media:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.step-gallery-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ifm-color-primary);
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.step-gallery-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ifm-color-primary-light);
+  opacity: 0.6;
+}
+
+.step-gallery-date {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ifm-color-primary-light);
+  opacity: 0.7;
+}
+
+.step-gallery-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  font-size: 1.2rem;
+  color: var(--vket-accent);
+  opacity: 0.5;
+  min-width: 20px;
+}
+
+/* ── Grid mode ── */
+
+.step-gallery--grid {
+  overflow-x: visible;
+  flex-wrap: wrap;
+}
+
+.step-gallery--grid .step-gallery-media {
+  aspect-ratio: 1 / 1;
+}
+
+.step-gallery--grid .step-gallery-media img,
+.step-gallery--grid .step-gallery-media video {
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* -------------------------------------------------------------------
+ *  7. Lightbox – Image
+ * ------------------------------------------------------------------- */
+
+.image-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  animation: lightbox-fade-in 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.image-lightbox-content {
+  border-radius: 4px;
+  transition: transform 0.05s ease-out;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.image-lightbox-controls {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(30, 30, 30, 0.85);
+  border-radius: 8px;
+  padding: 4px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+}
+
+.image-lightbox-controls button {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-size: 16px;
+  width: 36px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.image-lightbox-controls button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.image-lightbox-percent {
+  font-size: 12px !important;
+  width: 52px !important;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* -------------------------------------------------------------------
+ *  8. Lightbox – Video
+ * ------------------------------------------------------------------- */
+
+.video-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+  animation: lightbox-fade-in 0.2s ease;
+}
+
+.video-lightbox-content {
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 8px;
+  cursor: default;
+}
+
+
+/* -------------------------------------------------------------------
+ *  9. Lightbox – Navigation (shared by image & video)
+ * ------------------------------------------------------------------- */
+
+.lightbox-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(30, 30, 30, 0.65);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.lightbox-nav:hover {
+  background: rgba(60, 60, 60, 0.85);
+  color: #fff;
+}
+
+.lightbox-nav--prev {
+  left: 16px;
+}
+
+.lightbox-nav--next {
+  right: 16px;
+}
+
+.lightbox-counter {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  padding: 0 10px;
+  font-variant-numeric: tabular-nums;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  margin-left: 2px;
+}
+
+
+/* -------------------------------------------------------------------
+ *  10. Image Comparison Slider
+ * ------------------------------------------------------------------- */
+
+.img-compare {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: col-resize;
+  user-select: none;
+  -webkit-user-select: none;
+  margin: 24px 0;
+  border: 1px solid var(--vket-border-light);
+}
+
+.img-compare img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.img-compare-after {
+  width: 100%;
+}
+
+.img-compare-before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.img-compare-before img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+}
+
+.img-compare-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.img-compare-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.img-compare-handle::before {
+  content: '◂ ▸';
+  font-size: 10px;
+  color: #555;
+  letter-spacing: 2px;
+}
+
+.img-compare-label {
+  position: absolute;
+  bottom: 12px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  pointer-events: none;
+  z-index: 4;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.img-compare-label-left {
+  left: 12px;
+}
+
+.img-compare-label-right {
+  right: 12px;
+}
+
+
+/* -------------------------------------------------------------------
+ *  11. Progress Timeline
+ * ------------------------------------------------------------------- */
+
+.progress-timeline {
+  position: relative;
+  padding-left: 28px;
+  margin: 24px 0;
+}
+
+.progress-timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: var(--vket-border);
+}
+
+.progress-step {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.progress-step:last-child {
+  margin-bottom: 0;
+}
+
+.progress-step::before {
+  content: '';
+  position: absolute;
+  left: -24px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--vket-accent);
+  border: 2px solid var(--ifm-background-color, #ffffff);
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.progress-step-img {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--vket-border-light);
+  flex-shrink: 0;
+}
+
+.progress-step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.progress-step-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.progress-step-date {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+.progress-step-desc {
+  font-size: 0.88rem;
+  opacity: 0.85;
+  line-height: 1.5;
+}
+
+
+/* -------------------------------------------------------------------
+ *  12. Footer
+ * ------------------------------------------------------------------- */
+
+[data-theme='dark'] .footer--dark {
+  background-color: #141415;
+}
+
+
+/* -------------------------------------------------------------------
+ *  13. Animations
+ * ------------------------------------------------------------------- */
+
+@keyframes lightbox-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+/* -------------------------------------------------------------------
+ *  14. Responsive – Mobile
+ * ------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .step-gallery {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .step-gallery--grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .step-gallery-arrow {
+    display: none;
+  }
+
+  .progress-step {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .progress-step-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .lightbox-nav {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .lightbox-nav--prev {
+    left: 8px;
+  }
+
+  .lightbox-nav--next {
+    right: 8px;
+  }
+}

@@ -1,0 +1,207 @@
+---
+sidebar_position: 6
+---
+
+import StepGallery from '@site/src/components/StepGallery';
+
+# 入稿踩坑指南
+
+關於完整的 Item / Space 入稿流程、\
+官方已經準備了非常詳細的教學影片：[Vket 2026 Summer 入稿ガイド](https://youtu.be/ghvxqGDO8j8?si=DCuy1AxRAPSwl_yW)
+
+從 VRChat Creator Companion (VCC) 與 Unity 的安裝、\
+VketTools 的下載、專案建立、Unity 內的設定、取得認可碼、\
+一直到最後入稿、影片裡都有完整說明。
+
+所以基礎操作的部分、我就不在這裡一一重複了。
+
+這一頁主要會專注在實際入稿 (Submit Exhibition)、\
+以及進入下見ワールド (Preview World) 確認時遇到的幾個問題。
+
+## 下見ワールド (Preview World) 的光源問題
+
+我抽選到的「コクーン水族美術館 Redive」整體光源比較暗。\
+~~官方也針對展示的照明與顯示問題進行過兩次修正、不過整體還是偏暗就是了。~~
+
+即使在Unity裡看起來是非常正常的亮度、\
+但進到下見ワールド (Enter the preview world) 之後...
+
+那可是超出預期的暗啊。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-028.webp', label: 'in Unity' },
+  { img: '/vket-diary/img/web-029.webp', label: 'in 下見ワールド (VRChat)' },
+]} />
+
+後來詢問學長後才知道、\
+lilToon 的 **Base Settings**、有幾個可以調整模型受光效果的設定。
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-033.webp', label: 'lilToon Base Settings' }
+]} />
+
+| 設定 | 用途 |
+| ---------------------------------- | --------------------------------------------- |
+| Lower Brightness Limit | 模型最低可以暗到什麼程度。數值提高、可以避免模型在暗處黑掉。 |
+| Upper Brightness Limit | 模型最高可以亮到什麼程度。數值提高、可以保留更強的光照；反之、則可以避免過曝。 |
+| Monochrome Lighting | 降低燈光本身的顏色。減少紅光、藍光等強烈環境光把模型染色的程度。 |
+| Environment Strength on Shadow | 控制環境光影響陰影的程度。數值提高、陰影更容易受到周圍光線影響。 |
+
+這些設定造成的亮度差異、在 Unity 的入稿用 Scene 裡不一定能完整重現、\
+但實際進入下見ワールド之後、就會變得非常明顯...
+
+
+下面分別是三種設定的比較：
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-029.webp', label: 'lilToon Default' },
+{ img: '/vket-diary/img/web-030.webp', label: 'Emission 0.2 追加' },
+{ img: '/vket-diary/img/web-031.webp', label: '"Upper Brightness Limit" From 1 to 10' },
+]} />
+
+最後只能經過多次調整與上傳測試、慢慢把亮度調整到適合展區環境的程度。
+
+> ※ 入稿用 Scene 的光照環境和實際會場不同、最終效果還是要以下見ワールド為準。\
+※ Upper Brightness Limit 等亮度相關的數值如果拉太高、可能會在某些光源較強的場景裡造成過曝、需要根據展區環境去調整。\
+~~※ 每次重新入稿後、約需等待 5 小時到半天不等、模型的更新才會反映到下見ワールド。實際時間可能因展區、更新批次或系統狀況而不同、這裡僅記錄我自己的體感。~~
+
+
+## 入稿前記得先備份 (**非常重要**)
+
+在 VketTools 裡完成所有檢查、並確認全部通過之後...
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-036.webp', label: 'VketTools' },
+{ img: '/vket-diary/img/web-039.webp', label: 'Rule Check' },
+{ img: '/vket-diary/img/web-040.webp', label: 'Build Size Check' },
+{ img: '/vket-diary/img/web-041.webp', label: 'SetPass Check' },
+]} />
+
+正式按下入稿之前、記得先在 VCC 先按下 **Create Backup**！
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-034.webp', label: 'VCC Backup' }
+]} />
+
+按下 Create Backup 之後、系統會建立一個 ZIP 檔案、並存放在 VCC 的 `ProjectBackups` 資料夾裡。
+
+我平常就有每隔一段時間備份的習慣、所以幸運地避開了這個問題。\
+但我發現只要按下「入稿」、經過 Vket Tool 的一連串的檢查與處理、\
+「入稿完成」的視窗彈出之後、攤位編號底下的設定就會被瞬間清空...
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-035.webp', label: 'Submission completed' }
+]} />
+
+<StepGallery steps={[
+{ img: '/vket-diary/img/web-042.webp', label: 'Inspector Settings Before Submission' },
+{ img: '/vket-diary/img/web-037.webp', label: 'Inspector Settings After Submission' },
+]} />
+
+如果沒有在入稿前事先建立 Backup、\
+之後只要有任何內容需要修正、必須重新入稿時、就得從頭把所有設定再做一次……Orz
+
+如果要復原到入稿前的狀態、就可以使用入稿前建立的 Backup。
+
+記得先關閉 Unity、解壓縮 Backup 的 ZIP 檔案、\
+再將裡面的檔案複製並覆蓋回原本的 Project、就能取回入稿前的設定了。
+
+所以真的要記得：**先 Backup、再入稿。**
+
+## 台座選擇問題
+
+Item 入稿時、台座有兩種類型可以選擇：
+
+* 基本台座（Basic Pedestal）
+* 小物用台座（Small Item Pedestal）
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-032.webp', label: 'in Unity' },
+{ img: '/vket-diary/img/web-038.webp', label: 'Official Pedestal Example' },
+]} />
+
+原本想讓臭豆腐海兔在展位上更顯眼一點、所以打算使用小物用台座、\
+但嘗試了幾次都無法實現。`(ノω<。)`
+
+即使把物件縮小後再導入、確實已經能完整放進小物用台座那小小的範圍裡、\
+實際到了 Vket 的展位裡、它卻還是穩穩地待在地上。
+
+無論怎麼做、系統都判斷我只能使用基本台座...Orz\
+只好放棄掙扎、直接使用基本台座完成入稿。
+
+這個問題我到最後也沒有找到明確原因、\
+如果有人知道原因或解法、還請務必告訴我。`(⁎>ㅿ<人`
+
+## 貼圖（Texture）設定與壓縮
+### 貼圖壓縮 : Use Crunch Compression
+
+記得確認貼圖是否有開啟 **Use Crunch Compression**。
+
+Vket 2026 Summer 對 AssetBundle 的 Build Size 設有上限：\
+Item 出展為 3.00 MB、Space 出展則為 10.00 MB。
+
+可以透過 VketTools 的 Build Size Check 來確認打包後的檔案容量。
+
+貼圖有沒有開啟 Crunch Compression、最後的容量差距真的非常明顯。
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-047.webp', label: 'Without Crunch Compression' },
+{ img: '/vket-diary/img/web-048.webp', label: 'With Crunch Compression' },
+]} />
+
+雖然 Crunch Compression 屬於有損壓縮、可能會出現色塊或細節流失、
+所以還是要在檔案容量與顯示品質之間做個取捨。
+
+### 原始圖片尺寸與 Max Size
+
+除了原始圖片尺寸以外、兩張貼圖在 Unity 裡的其他設定完全相同。
+* 使用原圖 4096 px、在 Unity 的 Max Size 設為 2048 px
+* 使用原圖 2048 px、在 Unity 的 Max Size 同樣設為 2048 px
+
+但原圖本身就是 2048 px 的版本、\
+明顯比使用 4096 px 原圖、再交給 Unity 縮小成 2048 px 的版本更加清晰。
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-045.webp', label: '4096 px → Unity 2048 px' },
+{ img: '/vket-diary/img/web-046.webp', label: '2048 px → Unity 2048 px' },
+]} />
+
+### Mip Streaming
+
+VRChat SDK 可能會檢查貼圖是否已啟用 Mip Streaming、\
+所以記得確認 Generate Mipmaps 與 Mip Streaming 是否都已經勾選。
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-049.webp', label: 'Mip Streaming' }
+]} />
+
+## 其他小問題
+
+### FBX 模型檔的 Mesh 設定
+
+選擇 FBX 模型檔後、在 Inspector 的 Model 裡、\
+記得確認 Read/Write Enabled 與 Legacy Blend Shape Normals 是否已經勾選。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-050.webp', label: 'FBX Mesh Settings' }
+]} />
+
+部分 VRChat SDK、Script 或模型功能需要讀取 Mesh 資料、\
+如果沒有開啟 Read/Write Enabled、可能會出現檢查錯誤、功能失效或無法順利上傳的狀況。
+
+Legacy Blend Shape Normals 則會影響 Blend Shape 變形時的法線計算、\
+如果模型有使用表情或其他 Blend Shape、也記得一起確認。
+
+### 材質球與 SetPass Calls
+透明材質（2-Pass Transparent）、毛髮材質（Fur）、外框（Outline）等效果、\
+因為需要額外渲染一次、通常也會增加 SetPass Calls。
+
+例如、一個物件只套用了一個材質球時、SetPass Calls 原本是 1；\
+但將 Outline 開啟之後、即使材質球數量沒有改變、SetPass Calls 也會增加為 2。
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-051.webp', label: 'Without Outline' },
+{ img: '/vket-diary/img/web-052.webp', label: 'With Outline' },
+]} />
+
+所以不能只看使用了多少個材質球、\
+一定要透過 VketTools 的 SetPass Check、來確認最後的 SetPass Calls 數值。

@@ -1,0 +1,537 @@
+---
+sidebar_position: 7
+---
+
+import StepGallery from '@site/src/components/StepGallery';
+
+# 商品檔案血淚史
+
+> 前情提要 : 以下將會是一段又臭又長的廢話、\
+單純記錄一個人是如何一路犯蠢、繞遠路，最後才把東西做出來的。\
+篇幅很長、請斟酌閱讀；也可以直接從右側章節選單跳到想看的部分。
+
+在最初的計畫裡、\
+臭豆腐海兔就只是一個可以放在 World 裡的家具。
+
+玩家跟他的互動就是坐下、\
+定位也就是一個「可以坐的坐墊 (座れるクッション) 」而已。
+
+而在準備 Vket 入稿時、\
+我才發現、原來 World 裡的物件還可以設定成 Pickup。
+
+~~既然可以 Pickup、那是不是也可以直接丟出去了(?)~~
+
+於是、他又多了一個可以拿取 / 丟擲的功能。
+
+後來朋友幫忙測試的時候、又意外發現、原來他還可以製作成 Avatar 配件、\
+透過 Modular Avatar 安裝在 Avatar 身上。
+
+接著又發現、放在頭上或肩膀上的話、好像可以當寵物、\
+放在腳下的話、居然還可以當成坐騎嗎!?
+
+至此、他就從一個可以坐的家具、變成了：
+
+可以丟、可以坐、可以放在頭上或肩膀上當寵物、\
+可以放在腳下當坐騎、甚至還可以放大變成床的...
+
+多用途臭豆腐(◐‿◑)﻿
+
+## 3 種用途，3 隻臭豆腐
+
+鑑於我當時對 VRChat 開發是真的一竅不通、\
+前期的開發過程幾乎可以說是一路撞牆。
+
+我一開始完全不知道、\
+VRChat World 裡的自訂互動邏輯需要透過 Udon / UdonSharp 來製作、\
+也不理解 World 和 Avatar 使用的其實是不同的 SDK 與功能架構。
+
+我一直以為 Avatar 跟 World 的東西是共通的...
+
+也就是說、我一直天真地以為、\
+可以把 Pickup、Sit 和 Avatar 配件 3 種用途、\
+全部整合在同一隻臭豆腐的 Prefab 裡、再讓玩家自己選擇要啟用哪種功能。
+
+結果...~~我真是想多了~~
+
+World 的功能和 Avatar 的功能必須分開做。
+
+而即使同樣在 World 裡、\
+Sit (VRC_Station) 和 Pickup (VRC_Pickup) 放在同一個物件上也會造成操作互相干擾、\
+所以以實際使用來說、讓 1 隻臭豆腐負責 1 個主要功能、操作會比較單純。
+
+也就是說、這些功能如果全都要做、我需要準備 2 套檔案、 3 隻臭豆腐Prefab : 
+
+* World / Sit (坐下用)
+* World / Pickup (拿取、丟擲用)
+* Avatar / MA toggle (裝在身上用)
+
+光是弄懂這件事、我大概就花了兩個晚上反覆撞牆。\
+~~可以說是淚流滿面、灰頭土臉。~~
+
+## 遠看像 C#、近看是 U# (UdonSharp)
+
+這邊要強烈推薦這本 Udon 入門教學 : \
+[ぽんぽこほんぽ｜UdonSharp（U#）入門 v4.5｜VRChatワールド・ギミックをゼロから作る初心者向け教科書](https://pon-poko-pon.booth.pm/items/4409611)
+
+如果你對 VRChat World 製作有興趣、我真的非常推薦你看！\
+~~它唯一的缺點、就只是長達1152頁的日文而已！~~
+
+進入正題、這是我撞上的第一面牆。
+
+之前準備 Vket 入稿檔案時、\
+我只是按照說明、把 `VRC_Pickup` 加到物件上、\
+再調整 Inspector 裡的設定、基本就可以直接使用。
+
+因為都是 VRChat SDK 已經準備好的元件、\
+完全不需要自己寫程式 (只知道無腦用)。
+
+所以、我當時甚至以為 Udon 只是一個名稱、\
+就像是 VRChat 對 Script 的另一種叫法而已。
+
+~~是這樣沒錯、但不是這樣~~
+
+現在要開始自己寫功能時、才終於一頭撞上。
+
+我第一個要製作的功能其實非常單純：
+* 玩家坐下時、臭豆腐播放被壓扁的 BlendShape 動畫
+* 玩家離開後、臭豆腐恢復原狀
+
+所以我很自然地按照一般 Unity 的做法、\
+建立了一個普通的 C# Script、寫了一個很簡單的 `SitSquish.cs`。\
+然後滿懷期待地測試、結果...完全沒有反應。
+
+什麼都沒發生。
+
+wwww...欸？\
+為什麼？我哪裡寫錯了嗎囧？
+
+反覆檢查了好幾遍都找不到原因、結果查了資料之後才知道、\
+原來在 VRChat World 裡、不能直接把普通的 C# Script 掛上去使用、\
+而是要建立 `U# Script`。
+
+建立 U# Script 時、Unity 會產生一個用來寫程式的 `.cs` 檔案、\
+以及一個與它連動的 `UdonSharp Program Asset`。
+
+程式依然是寫在 `.cs` 裡、但 VRChat 並不會直接執行這份 C#。\
+而是要先經過 UdonSharp 轉換、才能在 World 裡運作。
+
+UdonSharp 雖然看起來像 C#、寫起來也很像 C#、\
+但並不是所有 C# 的寫法都能直接使用。
+
+它只支援部分 C# 的功能、也有一些自己的限制、\
+以及專門用來處理 VRChat World 互動的方式。
+
+例如、要判斷玩家什麼時候坐下或離開座位、\
+就不能完全照一般 Unity 的寫法處理、而是要使用 VRChat 提供的事件。
+
+除此之外、如果功能需要讓其他玩家也看到相同的結果、\
+還要另外考慮物件的控制權與同步問題。
+
+至於更深入的原理...其實我也沒有很懂 `(ㆆᴗㆆ)`\
+~~我真的不是寫程式的料。~~
+
+但至少到了這裡、\
+UdonSharp 有自己的一套規則是確定的了。
+
+## 第 1 個功能 : 坐下就壓扁
+
+知道 UdonSharp 的正確建立方式之後、\
+坐下壓扁的功能反而沒有遇到太大的問題。
+
+一開始、我是用 Animation Clip 記錄臭豆腐的 BlendShape、\
+再透過 Animator 執行壓扁與恢復的動畫。
+
+如果只有壓扁這項功能、這樣做其實沒有什麼問題。
+
+不過、後來考慮追加坐姿切換後、\
+每一種坐姿也都需要使用各自的 Animation Clip。
+
+雖然可以透過 Animator Layer 或更多 State 將它們組合在一起、\
+但這樣就需要額外管理更多參數、Transition 和播放狀態、\
+整體結構也會變得越來越複雜。
+
+由於壓扁效果本身只是改變 BlendShape 的權重、\
+只要改寫 `SitSquish.cs`、讓程式直接負責控制 BlendShape 權重。
+
+玩家坐下時、程式逐漸增加 BlendShape 的權重、讓臭豆腐慢慢被壓扁。\
+玩家站起來時、再將權重逐漸恢復為 `0`、讓它回到原本的形狀。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+ { img: '/vket-diary/video/video-002.mp4', label: 'Squish Test', video: true }
+]} />
+
+這樣一來、坐姿可以交給 Animation Clip 處理、\
+臭豆腐的壓扁效果就可以交由程式獨立控制。
+
+兩個功能就能用比較單純的方式共存、管理起來也方便許多。
+
+## 第 2 個煎熬 : 難產的坐姿與骨折的腳踝
+
+壓扁功能完成之後、\
+接下來就是決定 Avatar 坐下去時的姿勢。
+
+最初的構想是讓 Avatar 使用鴨子坐、\
+同時將雙手放到前方、抓住臭豆腐海兔的耳朵。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-078.webp', label: '抓住臭豆腐海兔耳朵的鴨子坐' },
+  { img: '/vket-diary/img/web-079.webp', label: '同一姿勢的骨架' },
+]} />
+
+想像起來挺可愛的、實際擺出來的效果也確實很不錯。
+
+### 海兔的耳朵、我抓不住你
+
+但開始使用不同的 Avatar 測試後、\
+很快就發現事情沒有那麼簡單。
+
+不同 Avatar 的身高、手臂長度與骨架比例都不一樣。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-080.webp', label: <a href="https://booth.pm/ja/items/6905661" target="_blank">3Dモデル【星凪 ゆらぎ】</a> },
+  { img: '/vket-diary/img/web-081.webp', label: <a href="https://booth.pm/ja/items/7740438" target="_blank">3Dモデル「うめ」</a> },
+  { img: '/vket-diary/img/web-082.webp', label: <a href="https://alua7.booth.pm/items/3978893" target="_blank">3Dモデル【Nys】(ネイス)</a> },
+  { img: '/vket-diary/img/web-084.webp', label: <a href="https://mofumofumotimoti.booth.pm/items/2029110" target="_blank">3Dモデル【もちねこ】</a> },
+]} />
+
+> ※ 可點擊各個 Avatar 名稱前往 BOOTH 商品頁面。
+
+要讓每一個 Avatar 既能坐在臭豆腐上、\
+同時又要讓雙手靠近海兔耳朵、顯然不太現實。
+
+尤其還要考慮 non-VR 模式的玩家、手部位置並不像 VR 玩家一樣能夠自由調整。
+
+因此、我最後放棄了抓住耳朵的動作、\
+改成比較單純、也比較容易適用於不同 Avatar 的鴨子坐。
+
+但你以為這樣就沒問題了嗎？\
+沒有、最根本的地方出了最大的問題。
+
+### 那個斷在 Unity 裡的腳踝
+
+一開始、我是在 Blender 裡調整 Pose、再將這個姿勢記錄成一幀 Animation、\
+連同人體骨架一起輸出成 FBX、匯入 Unity。
+
+明明使用原本的 T-Pose 骨架匯入時、Humanoid 看起來完全正常。\
+但將骨架與坐姿動畫一起匯入後、結果卻開始變得不太對勁...
+
+詢問過學長後才知道、Humanoid 的骨骼 Mapping 正確、\
+並不代表骨架的基準姿勢也一定正確。
+
+Unity 會嘗試將匯入的骨架校正成 Humanoid 所需的 T-Pose、\
+但看起來、它在換算坐姿骨架時、小腿以下的旋轉出了問題...
+
+所以名稱和骨骼對應明明全部正常、\
+但一打開 Humanoid 的 T-Pose、腳踝卻扭成了彷彿骨折一樣的角度。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-085.webp', label: '匯入 Unity 後變形的小腿與腳踝 1' },
+  { img: '/vket-diary/img/web-086.webp', label: '匯入 Unity 後骨折的腳踝 2' },
+  { img: '/vket-diary/img/web-087.webp', label: 'Humanoid 校正後變形的 T-Pose' },
+  { img: '/vket-diary/img/web-088.webp', label: '坐姿狀態下的骨架' },
+]} />
+
+我反覆調整骨架與姿勢、始終沒有辦法穩定解決。
+
+最後、我唯一能想到的方法、\
+就是將正常、不會出錯的 T-Pose 骨架匯入 Unity、\
+再使用 Unity 內建的 Animation 視窗、直接旋轉骨骼來製作坐姿動畫。
+
+~~但用 Unity 的 Animation 視窗擺 Pose、實在不是人類友善的操作方式。~~
+
+就在這時候、強者我同學向我推薦了一個超級神器：\
+[AvaPo！｜Unityでポーズ作成＆撮影ツール](https://booth.pm/ja/items/7249970)
+
+使用 AvaPo！之後、我可以直接透過各個關節上的藍色控制點調整姿勢。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-089.webp', label: 'AvaPo!的藍色控制點' }
+]} />
+
+比起在 Unity 的 Animation 視窗裡、逐一修改每根骨骼的旋轉數值、\
+AvaPo！的操作方式直覺了非常多！
+
+原本還在為坐姿苦惱了半天、\
+有了這個工具後、幾乎一下子就完成了。
+
+## 靈機一動：如果坐下能切換坐姿呢？
+
+做好原本預設的鴨子坐之後、我突然想到：\
+「如果坐在上面時、還可以自由選擇不同坐姿、會不會很有趣啊？」
+
+~~想法一旦出現、就跟洪水一樣止不住了。~~
+
+最後、我不知不覺製作了 8 種坐姿。
+
+有了坐姿、接下來的問題就是：\
+要怎麼讓玩家自由切換這 8 種坐姿呢？
+
+我先把需要的功能列下來：
+* 玩家坐下後、要能自由切換 8 種坐姿 → 需要 1 個 UI 選單
+* 選單上要能顯示目前選擇的坐姿
+* 選擇坐姿後、Avatar 要實際變成對應的姿勢
+* 玩家離開後、Pose 要正確解除、讓 Avatar 回到原本的狀態
+
+...於是、這場對我來說最煎熬的戰鬥就此揭幕。
+
+### 初陣 : 困在零點的 PoseIndex
+
+第一次嘗試的做法、是讓 8 種坐姿共用同一個 VRC Station、\
+透過 Animator 讀取 `PoseIndex` 的數值、切換到對應的坐姿。
+
+我先在 Animator 裡建立了 8 個坐姿 State、\
+再從 Any State 分別連到各個 State、\
+根據 `PoseIndex` 的數值決定要播放哪一個坐姿。
+
+接著、每個 UI 按鈕都透過 `SendCustomEvent()`、\
+呼叫 `_SelectPose0`、`_SelectPose1`……直到 `_SelectPose7`。
+
+照理來說、`SitPoseSelector` 接收到按鈕事件後、\
+就會改變 `PoseIndex` 的數值、讓 Animator 切換到對應的坐姿 State。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-090.webp', label: 'SitPoseSelector 與 Animator 的整體設定' },
+  { img: '/vket-diary/img/web-091.webp', label: '8 個坐姿 State 與 UI 按鈕事件設定' },
+]} />
+
+然而進入 Play Mode 並使用 Invoke 測試後...
+
+**毫無反應、宛如同一攤死水。**
+
+不論我選擇哪一個坐姿、`PoseIndex` 都始終停在預設值 `0`、\
+Animator 當然也完全沒有切換。
+
+第一次嘗試、就這樣卡死在了 `0`。
+
+### 第二陣 : 霧裡看花一場空
+
+第一次失敗之後、我決定先在程式裡加入 `Debug.Log`、\
+方便確認問題到底出在哪一個環節。
+
+像是：
+* 按鈕有沒有成功呼叫程式
+* `_SelectPose()` 有沒有收到正確的數字
+* `PoseIndex` 有沒有成功寫入參數
+* `Animator` 有沒有收到正確的數值
+
+但看完 `Debug.Log` 的結果之後、我反而更加困惑了。
+
+✅ 按鈕有成功觸發、\
+✅ `_SelectPose4()` 也確實有被呼叫、\
+✅ `SetInteger("PoseIndex", 4)` 同樣正常執行。
+
+從 Console 裡的紀錄來看、每一個環節似乎都沒有問題。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-092.webp', label: 'Debug 紀錄確認按鈕、PoseIndex 與 Animator 均有正常反應' }
+]} />
+
+既然按鈕有正常觸發、參數也成功寫入、\
+我開始懷疑問題可能不是「數值有沒有傳進去」、\
+而是傳進去之後、是否又被其他機制覆蓋了？
+
+也許 VRC Station 在運作時、會把 Animator 的設定重新蓋回預設狀態...嗎？
+
+那我就乾脆在 `Update()` 裡、\
+持續重新寫入目前選擇的 `PoseIndex`。
+
+在 Unity 的 Play Mode 中、這個方法看起來確實奏效了。\
+`PoseIndex` 的數值會正常改變、Animator 也會切換到對應的 State。
+
+然而、實際進入 VRChat、坐上椅子、按下按鈕...\
+Avatar 連衣角都沒動一下。
+
+PoseIndex 有成功傳入、場景中的 Animator 也確實都有正常連動、\
+但這些變化似乎只反映在場景物件上、沒有真正反映到 Avatar 的坐姿上。
+
+也就是說、真正出問題的、\
+很可能是 Animator 與 VRC Station 之間的某個環節。
+
+接下來、我得把那個斷掉的地方找出來。
+
+### 第三陣 : 真的、到底為什麼。
+
+既然 `PoseIndex` 確實有成功改變、\
+下一步、就是確認問題是不是出在 Transition。
+
+這一次、除了繼續透過 `SetInteger()` 與 Transition 切換以外、\
+我也分別使用兩種 `Animator.Play()` 的寫法、直接指定要播放的 State、\
+並加入 State Hash 等 Debug 資訊確認切換結果。
+
+`PoseIndex` 有改變、`Animator.Play()` 有被呼叫、\
+延遲一幀後再次檢查、Animator 的 State Hash 也確實不同了。
+
+Console 裡的結果幾乎全是正常的。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-093.webp', label: '播放指定 State、Animator.Play() 執行後 State Hash 也確實改變' }
+]} />
+
+至少可以確定、Animator 確實有切換 State。\
+然而、VRChat 測試、Avatar 依然紋風不動...
+
+RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR...\
+なぜだ！！！！！`崩╰(〒皿〒)╯潰`
+
+### 第四陣 : ALL IN Blend Tree!!
+
+也許...問題出在 Animator 的切換結構本身...？
+
+這次、我刪掉原本由多個 State 與 Transition 組成的結構、\
+把 8 個坐姿動畫全部放進同一個 Blend Tree 裡。
+
+Blend Tree 可以根據一個參數、在多個 Animation Clip 之間進行選擇或混合。\
+因此我使用 Float 參數 `PoseBlend`、讓不同的數值分別對應 8 個坐姿。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-094.webp', label: '將 8 個坐姿放入 Blend Tree、並使用 PoseBlend 控制對應動畫' }
+]} />
+
+理論上、只要改變 `PoseBlend`、就能直接呈現對應的坐姿。
+
+在 Unity 的 Play Mode 裡、\
+Blend Tree 也確實會隨著 `PoseBlend` 正常呈現對應的動畫。
+
+我連椰子汁都端出來了、已經準備好要慶祝了。\
+...我終於要解脫了嗎？！
+
+進入 VRChat 測試、坐上椅子、我顫抖著雙手按下按鈕。\
+——還是那個姿勢。
+
+...我燃燒殆盡、幻化成灰。`ヽ(・､ ．)ﾉ))ｺｹｯ`
+
+### 終陣 : 一個蘿蔔一個坑
+
+前面連續嘗試了 5 種方法、我卻始終卡在同一個地方。\
+於是、我決定暫時關掉專案、帶著殘破不堪的心躺到床上斷片了。
+
+但似乎、那個不甘心的我、\
+~~在夢裡面也還在不停地嘗試。~~
+
+夢裡的我突然意識到 : \
+會不會...VRChat 的坐姿判定、其實是以「VRC Station」為基礎的？
+
+真正需要切換的或許根本不是 Animator 的 State、\
+而是 VRC Station 本身？
+
+畢竟我前面一直在修改的、都只是同一個 VRC Station 裡的動畫狀態。\
+不管參數和 State 怎麼切換、玩家實際上從頭到尾都沒有換過 Station。
+
+也就是說、我一直在想辦法替同一個坑更換坐姿、\
+卻從來沒有真的把玩家移到另一個坑裡。
+
+簡單來說、就是「一個蘿蔔一個坑」。
+
+既然如此、那就乾脆準備 8 個 VRC Station、\
+讓每一個 VRC Station 分別對應一種坐姿。
+
+當玩家選擇其他姿勢時、程式會先讓玩家離開目前的 Station、\
+然後再進入另一個對應坐姿的 Station。
+
+為了完成這套切換方式、我需要的是：
+* `SitPoseSelector` : 負責記錄目前的坐姿、接收按鈕操作、並控制玩家切換到另一個 Station。
+* `SitPoseStationRelay` : 掛在每一個 Station 上、將玩家進入或離開的事件傳回 `SitPoseSelector`。
+
+這樣一來、控制腳本就能知道玩家目前坐在哪一個 Station、\
+並在切換姿勢時、先退出原本的位置、再進入到新的 Station。
+
+先前做好的 Blend Tree 也沒有白做、\
+仍然可以繼續用來管理各個 Station 使用的坐姿動畫。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-095.webp', label: '建立 8 個 VRC Station、分別對應 8 種坐姿' },
+  { img: '/vket-diary/img/web-096.webp', label: '在 SitPoseSelector 中依序指定各個 Station 與坐姿按鈕' },
+]} />
+
+...夢到這裡、我直接就醒了。\
+~~我感覺現在不是繼續睡覺的時候。~~
+
+趁著還沒有忘記夢裡的內容、\
+我立刻爬起來到電腦前開始實作。
+
+最後...\
+成功啦～～～～！！！！` ٩(ˊᗜˋ*)و`
+
+夢裡的我最強啊！ `( ◡̀_◡́)ᕤ`\
+真的已經被她救過無數次了...、到底是怎麼做到的？
+
+## 欸嘿、你看不到我 ｜ωФ)ｼﾞｰ
+
+把我榨得乾乾扁扁的坐姿切換功能總算是完成了。
+
+但我很快就注意到另一個問題：\
+**這個選單、會出現在攝影機裡面！**
+
+這可是重大問題！
+
+玩 VRChat 的人、哪有不開相機拍照的？\
+應該沒有人會想把一整片坐姿選單、一起拍進照片裡吧！
+
+這樣實在不行啊！！
+
+所以我...對、我又老毛病犯了。\
+~~我以為只要把選單設定到 **UI Layer** 就好了。~~
+
+事實上方向也沒錯、\
+設定到 **UI Layer** 的選單、確實不會被 VRChat 的相機拍進畫面。
+
+但是...~~你知道...有時候就是不想聽到這個 BUT。~~\
+**玩家也無法再與選單互動了。**
+
+查了一下才知道、\
+VRChat 遊玩時、是會讓玩家的操作射線忽略 **UI Layer** 的。
+
+因此、設定在 UI Layer 的選單、\
+玩家雖然還是看得見、VRChat 的相機也不會將它拍進畫面、\
+但玩家的指標、同樣也無法選中上面的按鈕。
+
+看得到、拍不到、也按不到呢...(苦笑)
+
+那...那我能想到的辦法、\
+就只剩下用 Shader 把它藏起來了。
+
+不過、UI 裡使用的 `Image`、以及負責顯示文字的 TextMeshPro、\
+兩者的渲染方式剛好有些不同。
+
+`Image` 是直接讀取 Sprite 貼圖、\
+TextMeshPro 則需要從 Font Atlas 裡、重新計算文字顯示的範圍。
+
+所以、我得把它們分開寫成了兩個 Shader : 
+* 一個負責隱藏 UI Image
+* 一個負責隱藏 TextMeshPro 文字
+
+目標是讓套用 Shader 的選單、\
+在玩家眼中仍然正常顯示，按鈕也能正常操作、\
+但透過 VRChat 相機拍攝時、選單絕不會出現在畫面裡。
+
+這裡就要提到一個關鍵概念、\
+VRChat 本身有提供了一個名為 `_VRChatCameraMode` 的 Shader 全域變數。
+
+在玩家視角下、它的數值會是 `0` 、\
+但當畫面由 VRChat 的相機或截圖功能渲染時、它就會變成其他數值。
+
+換句話說、我只要讓 Shader 檢查 `_VRChatCameraMode` 的數值即可。\
+當它不再是 `0` 時、就代表目前是由 VRChat 的相機進行渲染、\
+這時再使用 `discard` 捨棄那些像素、不把選單繪製進相機的畫面裡。
+
+透過這樣的判斷、就能實現 : \
+**玩家看得到、按得到、只有 VRChat 的相機看不到**的效果了。	
+
+## 我的最強救星 ★ VR 玩家實測
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

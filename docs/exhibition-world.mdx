@@ -1,0 +1,300 @@
+---
+sidebar_position: 8
+---
+
+import StepGallery from '@site/src/components/StepGallery';
+
+# 海兔的展示空間
+
+> 歡迎參觀 [「スティウミ試遊ワールド」 ](https://vrchat.com/home/launch?worldId=wrld_87880be3-7d5c-4631-af0b-94e028b7ee6f)
+
+原本、完成 Vket 入稿、\
+也準備好要放上 BOOTH 販售的 Unity Package 之後、\
+接下來只要等 Vket 開幕、正式開賣就好了。
+
+但...我突然很想做一個小空間、\
+讓大家可以實際進去玩玩看臭豆腐海兔。
+
+就...不只是看看圖片或影片、\
+而是真的拿起來、丟丟看、坐坐看、親自確認它到底是什麼東西。
+
+~~OS : 你到底有多喜歡臭豆腐~~
+
+於是、我決定做一間小小的 VRChat 展示空間。
+
+## 場景設計
+
+我不是一個場景設計師...\
+~~我以前畫的場景都被鞭打過好幾次、難看到差點就要被驅逐出門的程度。~~
+
+所以、很抱歉、這裡看不到我的場景設計稿 www\
+~~沒有草圖、直接就進 Blender 裡搓了。~~
+
+不過、我可以分享我寫在記事本裡的東西 : 
+
+* 小小的空間
+* 像跳舞室那樣? 四周都是鏡子? 反正至少要有一面鏡子
+* 高度? 寬度? 有沒有需要設限 Avatar 高度?
+* 明亮的空間、木質地板、油漆牆
+* 需要符合設定嗎? 海兔>>>海洋? 海洋主題?
+* 放進寶寶海兔? 之後能重複使用的空間
+* 要讓主角突出、配色...淺棕淺黃 / 藍白 / 灰色系...?
+* 看板哪裡? 牆上? 方形圓角；放地上? 餐廳用的小黑板? A 字立牌?
+* 月詠やな、素材屋まーにゃん、BOOTH連結、X 連結 (QR Code? 好像沒意義)
+
+我沒有完整的設計稿、也沒有特別精密的配置圖。\
+大概就是先把想到的東西全部寫下來、\
+然後進 Blender 裡一邊建、一邊改、慢慢搓出自己喜歡的感覺。
+
+我不會什麼厲害的空間設計理論、\
+過程中做的、其實就是不斷地加加減減。
+
+WIP 過程我放在這裡、有興趣的話可以看看。\
+~~可能沒有什麼參考價值、因為都是我途中截圖給朋友看的圖片...~~
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-057.webp', label: 'Blocking' },
+  { img: '/vket-diary/img/web-058.webp', label: 'Color' },
+  { img: '/vket-diary/img/web-059.webp', label: 'Blender Final' },
+  { img: '/vket-diary/img/web-060.webp', label: 'Unity Final' },
+]} />
+
+## Unity 專案設定
+透過 **VRChat Creator Companion (VCC)** 建立 Unity 專案、\
+選擇 **World (2022)** Template 建立專案後、再透過 **Manage Packages** 加入 **lilToon**。
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-061.webp', label: 'VCC 建立新專案' },
+  { img: '/vket-diary/img/web-062.webp', label: 'VRChat World 專案設定' },
+  { img: '/vket-diary/img/web-063.webp', label: 'VCC 加入 lilToon' },
+]} />
+
+> ※ lilToon、VRChat SDK 等套件未來有版本更新時、也可以回到 Manage Packages 進行更新。更新前記得先備份專案。
+
+追加完成後、按下 **Open Project** 開啟 Unity。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-064.webp', label: '成功開啟一個乾淨的 VRChat World Unity 專案' }
+]} />
+
+接下來、就可以把 Blender 裡完成的場景匯入 Unity 了。
+
+### Blender → FBX 檔案輸出注意事項
+
+從 Blender 輸出 FBX 檔案時、我使用的輸出設定如下 : 
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-065.webp', label: 'Blender FBX 輸出設定' }
+]} />
+
+輸出前記得確認這幾個事情 : 
+* 模型尺寸、方向、法線及物件名稱是否正確。
+* 套用 **Rotation & Scale**、使 Rotation 為 `0, 0, 0`、Scale 為 `1, 1, 1`。
+* 需要單獨旋轉或移動的物件、將 **Object Origin** 放在實際的旋轉軸心或移動基準點。
+> ※ 以上設定主要適用於靜態模型。\
+※ 若模型包含骨架、記得 Armature 中取消勾選 Add Leaf Bones；需要輸出動畫時、記得勾選 Animation。
+
+### Unity 資產整理
+
+匯入 Unity 後、我個人習慣會按照檔案用途整理資料夾 : 
+* Materials : 材質
+* Models : FBX 模型
+* Prefabs : Prefab
+* Scenes : Unity 場景檔案
+* Scripts : 程式腳本
+* Textures : 貼圖 (image)
+
+接著把模型與貼圖等放進對應的資料夾、\
+在 Materials 中建立 lilToon 材質、再將材質套用到場景中對應的模型上、\
+就完成基本的模型匯入與材質設定了。
+
+## 互動功能
+
+這次絕大部分的互動功能都使用了 [LuraSwitch2](https://booth.pm/ja/items/1969082)。
+
+主要使用到的功能：
+* 鏡子切換
+* 物件位置切換（Position A / Position B）
+* Pickup 物件回歸
+
+### LuraSwitch2安裝方式
+[LuraSwitch2](https://booth.pm/ja/items/1969082) 的安裝方式很簡單。\
+BOOTH 下載檔案其 ZIP 檔後、將裡面的 Unity Package 直接匯入 Unity 專案、\
+Assets 中出現 `QuickBrown` 資料夾、就表示已經成功匯入了。
+
+詳細的使用方式、強烈建議直接閱讀官方的 [Lura Switch 2 説明書](https://lurathunder.github.io/lura-switch-docs/)。
+
+以下只記錄我實際使用、並另外做過調整的部分。
+
+### 鏡子的三段式切換（OFF / LQ / HQ）
+
+[LuraSwitch2](https://booth.pm/ja/items/1969082) 原本就提供了鏡子的三段式切換功能、\
+只是它的操作介面由多個開關與操作桿所組成。
+
+雖然提供了玩家自行調整的自由度、\
+但我比較喜歡簡化操作、希望玩家只需要按一個按鈕、就能依序切換鏡子的狀態。
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-066.webp', label: 'LuraSwitch2 Default' },
+  { img: '/vket-diary/img/web-067.webp', label: '單按鈕循環切換' },
+]} />
+
+我保留了主要的 `Switch_Mirror` 開關、並將 **Switch Mode** 改為 **External** 模式。\
+在不修改 [LuraSwitch2](https://booth.pm/ja/items/1969082) 原有腳本與結構、沿用它原本的按鈕與事件呼叫機制的前提下、\
+另外寫了一個 `MirrorCycleSwitch.cs`、負責管理鏡子的三種狀態。
+
+`MirrorCycleSwitch.cs` 主要控制：
+* MirrorActivator
+* LQ_Activator
+* HQ_Activator
+
+每次按下開關時、\
+腳本便會切換至下一個狀態、同時更新鏡子的顯示品質與開關面板上的文字。
+
+這樣就能將原本需要透過多個開關與操作桿控制的 OFF / LQ (透明) / HQ (高清)、\
+改成只使用單一按鈕、就能依序循環切換。
+
+鏡子的切換設定為 **Local**、\
+因此每位玩家都可以自行切換鏡子的顯示狀態、不會影響其他玩家。
+
+### Pickup 回收
+
+展示空間裡有一隻臭豆腐海兔可以拿起來、丟出去。\
+為了避免它被丟到場景外面後找不回來、\
+我需要在場景內加入一個能讓它回到原位的機制。
+
+[LuraSwitch2](https://booth.pm/ja/items/1969082) 本身就有讓物件回到初始位置的 Respawn 功能、\
+如果只需要單純的手動重置、直接使用它原本的功能就足夠了。
+
+不過、除了手動重置以外、\
+我還希望臭豆腐海兔在被丟得太遠時可以自動回收。
+
+因此我另外寫了 `PickupRespawner.cs`、加入手動重置與自動回收功能。\
+並沿用 [LuraSwitch2](https://booth.pm/ja/items/1969082) 的按鈕介面、透過 **External** 呼叫這支腳本。
+
+將 **Switch Mode** 設為 **External**、按下開關時呼叫 `RespawnAll`、\
+讓所有指定的 Pickup 物件回到初始位置。
+
+自動回收則會每隔 3 秒檢查一次 Pickup 物件的位置。\
+當物件距離初始位置超過 8 公尺、且沒有被玩家拿在手上時、就會自動回到原位。
+
+為了避免多人同時對同一個 Pickup 物件執行回收、\
+自動回收只會由該物件目前的擁有者負責處理。
+
+> ※ 8 公尺的回收距離與 3 秒的檢查間隔、都可以在 Inspector 中自行調整。\
+※ 我知道把空氣牆做厚一點、就可以完全避免它被丟出去...~~但其實我滿想讓大家試著把它擠出去 www~~
+
+## Skybox 初體驗
+
+當 Unity 的設定都差不多完成後、回頭一看...\
+~~呃...這個 Skybox 好像得做點什麼。~~
+
+理所當然的、~~我完全沒有畫過 Skybox 的經驗啊。~~\
+網路上也找不太到適合的、想了想...~~好像只能自己生一個出來了~~。
+
+稍微搜尋了一下、發現 Unity 製作 Skybox 的方式有很多種、\
+內建的 Skybox Shader 大致可以分成以下四種：
+* [6 Sided](https://docs.unity3d.com/2023.1/Documentation/Manual/shader-skybox-6sided.html) : 使用六張正方形圖片、分別對應前、後、左、右、上、下。
+* [Cubemap](https://docs.unity3d.com/6000.0/Documentation/Manual/shader-skybox-cubemap.html) : 使用一個 Cubemap 資產、其中包含六個方向的畫面。
+* [Procedural](https://docs.unity3d.com/2022.3/Documentation/Manual/shader-skybox-procedural.html) : 透過參數動態調整天空顏色、太陽位置與大氣效果。
+* [Panoramic](https://docs.unity3d.com/2021.3/Documentation/Manual/shader-skybox-panoramic.html) : 使用一張 360 度全景圖片作為天空背景。
+
+於是、我決定選擇對自己來說最直覺的方式、\
+利用 Blender 的 UV Sphere 來製作 **Panoramic Skybox** 貼圖。
+
+### 如何用 Blender 製作 Skybox 貼圖
+
+首先在 Blender 中建立一顆 **UV Sphere**、\
+將 `Segments` 與 `Rings` 都設為 `64`、`Radius` 設為 `8 m`。
+
+接著進入 Edit Mode、`A` 全選所有面、\
+按下 `Alt + N` 、選擇 **Flip** 反轉法線。
+
+由於 Skybox 最終是從球體內部向外觀看、因此需要讓球體內側成為正面。
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-068.webp', label: '建立 UV Sphere' },
+  { img: '/vket-diary/img/web-069.webp', label: '設定 Segments、Rings 與 Radius' },
+  { img: '/vket-diary/img/web-070.webp', label: 'Normal Flip 反轉法線' },
+]} />
+
+接著切換到 **UV Editing** 工作區、建立一張 `4096 × 2048`、比例為 `2:1` 的圖片、\
+這裡先取名為 `SkyboxMAP` (名稱可以自行調整)。
+
+在 UV Sphere 上建立材質、並將 `SkyboxMAP` 指定到材質中。
+
+UV Sphere 建立時已經帶有對應的 UV、\
+因此可以直接用來確認貼圖在球形空間中的比例與變形。
+
+之後切換到 **Texture Paint** 工作區、先大致畫出想要的構圖與定位標線、\
+再將圖片匯出到 Photoshop 或 CSP 中完成細節。
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-071.webp', label: '建立 4096 × 2048 圖片' },
+  { img: '/vket-diary/img/web-072.webp', label: '在 Blender 中畫出大致構圖' },
+  { img: '/vket-diary/img/web-073.webp', label: '在 CSP / Photoshop 中完成' },
+  { img: '/vket-diary/img/web-074.webp', label: 'Blender 中的最終效果' },
+]} />
+
+> ※ 因為法線反轉的關係、記得改在旁邊的 **Image Editor** 上繪製。\
+※ 習慣使用 Blender 繪製的人、也可以不另外匯出、直接在 Blender 裡完成。
+
+### Unity 的 Skybox 設定
+
+完成 Skybox 貼圖後、將圖片匯入 Unity、\
+建立一個新的 Material、這裡取名為 `Sky_Pastel` (名稱可以自行調整)。
+
+在 Sky_Pastel 的 Inspector、將 Shader 設為 : **Skybox > Panoramic**\
+接著把畫完的 `SkyboxMAP` 放到 Spherical (HDR) 的貼圖欄位中。
+
+其他設定維持預設即可、這邊稍微記錄一下每個項目的用途：
+
+<details>
+<summary><strong>查看每個項目的用途</strong></summary>
+
+| 項目 | 說明 |
+| --- | --- |
+| Tint Color | 替整張 Skybox 貼圖疊加顏色。<br />設為白色時、會維持原本的貼圖色彩。 |
+| Exposure | 調整 Skybox 貼圖的整體亮度。<br />`1` 為原本的亮度、數值越大越亮、越小則越暗。 |
+| Rotation | 讓 Skybox 繞著 Y 軸旋轉。<br />可以用來調整背景與場景的相對方向。 |
+| Mapping | <ul><li>Latitude Longitude Layout：使用經緯度展開的全景貼圖。</li><li>6 Frames Layout：使用包含六個方向畫面的 Cubemap 展開圖。</li></ul> |
+| Image Type | <ul><li>360 Degrees：讓圖片完整環繞整個場景。</li><li>180 Degrees：只使用半球範圍、背面保持黑色、或使用 Mirror on Back 鏡像填補。</li></ul> |
+| 3D Layout | <ul><li>None：一般的 2D 全景貼圖。</li><li>Side by Side：左右眼畫面並排排列。</li><li>Over Under：左右眼畫面以上下方式排列。</li></ul> |
+| Render Queue | Unity 用來決定材質渲染順序的佇列分類。<ul><li><strong>Background（1000）</strong>：用於場景背景。Skybox 屬於這個分類。</li><li><strong>Geometry（2000）</strong>：用於一般不透明物件、例如牆壁、地板與家具。</li><li><strong>AlphaTest（2450）</strong>：用於透明裁切材質、例如葉片或鐵網。</li><li><strong>Transparent（3000）</strong>：用於玻璃、水面或粒子等半透明材質。</li><li><strong>Overlay（4000）</strong>：用於需要覆蓋在其他畫面之上的效果、通常在最後階段繪製。</li></ul> |
+| Double Sided Global Illumination | 讓模型背面在 Progressive Lightmapper 烘焙全域光照時、也參與間接光反射計算。<br />通常用於樹葉、布片、紙張或薄牆等單面模型。<br />這個選項不會讓背面實際顯示、也不會將背面加入 Lightmap。<br />Skybox 不需要使用這項功能、因此維持關閉即可。 |
+
+> ※ **Image Type** & **3D Layout** 只有在 **Mapping** 選擇 **Latitude Longitude Layout** 時才會顯示。
+</details>
+
+完成 Skybox 的材質設定後、開啟：**Window > Rendering > Lighting**
+
+切換到 **Environment** 頁面、\
+將剛剛建立的 `Sky_Pastel` 材質拖曳至 **Skybox Material** 欄位。
+
+完成後、Scene View 與 Main Camera 的預覽畫面中、就會顯示新的天空背景。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-077.webp', label: 'Skybox Material 設定' }
+]} />
+
+> ※ 若 Main Camera 沒有顯示 Skybox、請確認 Main Camera 的 **Clear Flags** 已設定為 **Skybox**。\
+> ※ 若 Skybox 貼圖出現接縫、可以嘗試在貼圖的 Import Settings 中關閉 **Generate Mip Maps**。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-075.webp', label: 'With Generate Mipmaps' },
+  { img: '/vket-diary/img/web-076.webp', label: 'Without Generate Mipmaps' },
+]} />
+
+### 我需要 Bake Lighting 嗎?
+
+當場景中有大量不會移動的物件、我們希望保留固定的陰影與光線反彈效果、\
+同時減少 Realtime Lighting 的運算負擔、進一步最佳化平台效能時、\
+就可以考慮使用 Bake Lighting。
+
+Bake 後的光照會被記錄在 Baked Lightmaps 中、\
+會移動的物件則可以搭配 Light Probe、取得周圍的環境光資訊。
+
+這次的展示空間規模較小、也沒有複雜的光影需求、\
+絕大部分的明暗與陰影效果、我都直接繪製在貼圖上、因此就沒有進行烘焙。
+
+有需要的人、可以再依照自己的場景規模與效能需求、自行斟酌是否使用。
