@@ -48,6 +48,7 @@ const config = {
     ({
       image: 'img/docusaurus-social-card.jpg',
       colorMode: {
+        defaultMode: 'dark',
         respectPrefersColorScheme: false,
       },
       zoom: {
