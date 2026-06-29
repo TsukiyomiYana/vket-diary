@@ -37,7 +37,7 @@ VketTools 的下載、專案建立、Unity 內的設定、取得認可碼、\
 lilToon 的 **Base Settings**、有幾個可以調整模型受光效果的設定。
 
 <StepGallery arrows={false} maxWidth="600px" steps={[
-  { img: '/vket-diary/img/web-033.webp', label: 'lilToon Base Settings' }
+  { img: '/vket-diary/img/web-033.webp', label: 'lilToon Default Base Settings' }
 ]} />
 
 | 設定 | 用途 |
@@ -63,7 +63,7 @@ lilToon 的 **Base Settings**、有幾個可以調整模型受光效果的設定
 
 > ※ 入稿用 Scene 的光照環境和實際會場不同、最終效果還是要以下見ワールド為準。\
 ※ Upper Brightness Limit 等亮度相關的數值如果拉太高、可能會在某些光源較強的場景裡造成過曝、需要根據展區環境去調整。\
-~~※ 每次重新入稿後、約需等待 5 小時到半天不等、模型的更新才會反映到下見ワールド。實際時間可能因展區、更新批次或系統狀況而不同、這裡僅記錄我自己的體感。~~
+※ 每次重新入稿後、約需等待 5 小時到半天不等、模型的更新才會反映到下見ワールド。實際時間可能因展區、更新批次或系統狀況而不同、這裡僅記錄我自己的體感。
 
 
 ## 入稿前記得先備份 (**非常重要**)
@@ -108,6 +108,8 @@ lilToon 的 **Base Settings**、有幾個可以調整模型受光效果的設定
 
 所以真的要記得：**先 Backup、再入稿。**
 
+> ※ 我沒有向其他人確認過這是否為普遍問題、僅記錄我個人實際遇到的情況。
+
 ## 台座選擇問題
 
 Item 入稿時、台座有兩種類型可以選擇：
@@ -149,8 +151,8 @@ Item 出展為 3.00 MB、Space 出展則為 10.00 MB。
 { img: '/vket-diary/img/web-048.webp', label: 'With Crunch Compression' },
 ]} />
 
-雖然 Crunch Compression 屬於有損壓縮、可能會出現色塊或細節流失、
-所以還是要在檔案容量與顯示品質之間做個取捨。
+不過，Crunch Compression 畢竟屬於有損壓縮、可能會出現色塊或細節流失、\
+因此仍需要視需求、在檔案容量與顯示品質之間做個取捨。
 
 ### 原始圖片尺寸與 Max Size
 
@@ -158,8 +160,8 @@ Item 出展為 3.00 MB、Space 出展則為 10.00 MB。
 * 使用原圖 4096 px、在 Unity 的 Max Size 設為 2048 px
 * 使用原圖 2048 px、在 Unity 的 Max Size 同樣設為 2048 px
 
-但原圖本身就是 2048 px 的版本、\
-明顯比使用 4096 px 原圖、再交給 Unity 縮小成 2048 px 的版本更加清晰。
+實際比較後可以發現、直接使用 2048 px 原圖的版本、\
+明顯比使用 4096 px 原圖、再由 Unity 縮小至 2048 px 的版本更加清晰。
 
 <StepGallery arrows={false} steps={[
 { img: '/vket-diary/img/web-045.webp', label: '4096 px → Unity 2048 px' },
@@ -179,18 +181,22 @@ VRChat SDK 可能會檢查貼圖是否已啟用 Mip Streaming、\
 
 ### FBX 模型檔的 Mesh 設定
 
-選擇 FBX 模型檔後、在 Inspector 的 Model 裡、\
-記得確認 Read/Write Enabled 與 Legacy Blend Shape Normals 是否已經勾選。
+部分 VRChat SDK 檢查、Script 或模型功能需要讀取 Mesh 資料、\
+匯入 FBX 模型檔後、記得選取該檔案、並在 Inspector 的 Model 分頁中、\
+確認 Read/Write Enabled 已經勾選、並檢查 Legacy Blend Shape Normals 的設定。
 
 <StepGallery arrows={false} maxWidth="500px" steps={[
   { img: '/vket-diary/img/web-050.webp', label: 'FBX Mesh Settings' }
 ]} />
 
-部分 VRChat SDK、Script 或模型功能需要讀取 Mesh 資料、\
-如果沒有開啟 Read/Write Enabled、可能會出現檢查錯誤、功能失效或無法順利上傳的狀況。
+如果是 Avatar 使用的 Mesh、請確認 Read/Write Enabled 已經開啟、\
+否則可能會導致 SDK 檢查報錯、相關功能無法正常運作、或無法上傳。
 
-Legacy Blend Shape Normals 則會影響 Blend Shape 變形時的法線計算、\
-如果模型有使用表情或其他 Blend Shape、也記得一起確認。
+World 使用的 Mesh 則不一定需要開啟、\
+只有相關 Script 或功能需要讀取 Mesh 資料時、才需要另外啟用。
+
+**Legacy Blend Shape Normals** 則是會影響 Blend Shape 變形時的法線計算。\
+如果模型在 Blend Shape 變形時有出現陰影異常或法線問題、再嘗試開啟並確認顯示結果。
 
 ### 材質球與 SetPass Calls
 透明材質（2-Pass Transparent）、毛髮材質（Fur）、外框（Outline）等效果、\
