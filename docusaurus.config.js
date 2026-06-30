@@ -6,7 +6,7 @@ const siteTitle = 'Vket 2026 Summer 參展日記';
 const config = {
   title: siteTitle,
   tagline: '第一次參加 Vket 的小小心得與分享',
-  favicon: 'img/favicon.ico',
+  favicon: '/vket-diary/img/icon_Anu_250.webp',
 
   future: {
     v4: true,

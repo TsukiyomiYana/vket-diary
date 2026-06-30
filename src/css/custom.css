@@ -38,6 +38,7 @@
   --vket-border: #d5d0c8;
   --vket-border-light: #e8e3db;
   --vket-text-muted: #999;
+  --vket-gallery-text: #6f6a63;
 }
 
 [data-theme='dark'] {
@@ -63,6 +64,7 @@
   --vket-border: #505055;
   --vket-border-light: #3a3a3e;
   --vket-text-muted: #999;
+  --vket-gallery-text: #c8c3bb;
 }
 
 
@@ -485,7 +487,7 @@ figure figcaption {
 .step-gallery-label {
   display: block;
   font-size: 0.8rem;
-  color: var(--ifm-color-primary);
+  color: var(--vket-gallery-text);
   margin-top: 6px;
   font-weight: 500;
 }
