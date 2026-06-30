@@ -32,6 +32,15 @@ const sidebars = {
           'promotion',
           'tools-and-materials',
           'official-paper',
+          'special-thanks',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'DLC : 展示空間的小彩蛋',
+      collapsible: false,
+      items: [
+          'dlc-gimmick',
       ],
     },
   ],
