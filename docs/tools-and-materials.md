@@ -16,7 +16,7 @@ sidebar_position: 12
 ### VRChat / Unity 工具
 
 * [VRChat Creator Companion（VCC）](https://vcc.docs.vrchat.com/) / Unity 2022.3.22f1
-* [lilToon 2.3.4](https://lilxyzw.github.io/lilToon/)
+* [lilToon](https://lilxyzw.github.io/lilToon/)
 * [Modular Avatar](https://modular-avatar.nadena.dev/) (Avatar 的 MA Toggle 設定)
 * [AvaPo！｜Unityでポーズ作成＆撮影ツール](https://booth.pm/ja/items/7249970) (Unity中製作Pose跟攝影用的工具)
 * [LuraSwitch2](https://booth.pm/ja/items/1969082) (VRChat 展示廳的互動機關設定)
