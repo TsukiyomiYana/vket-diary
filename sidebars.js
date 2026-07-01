@@ -9,7 +9,8 @@ const sidebars = {
       items: [
           'why-vket',
           'preparation',
-          'pre-work'
+          'pre-work',
+          'vket-others',
       ],
     },
     {
