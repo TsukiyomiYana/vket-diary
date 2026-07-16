@@ -1,0 +1,18 @@
+{
+  "sidebar.tutorialSidebar.category.參展準備": {
+    "message": "Getting Ready",
+    "description": "Sidebar category label"
+  },
+  "sidebar.tutorialSidebar.category.製作・踩坑紀錄": {
+    "message": "Production & Pitfalls",
+    "description": "Sidebar category label"
+  },
+  "sidebar.tutorialSidebar.category.販售・宣傳與資料備忘錄": {
+    "message": "Sales, Promotion & Notes",
+    "description": "Sidebar category label"
+  },
+  "sidebar.tutorialSidebar.category.DLC : 展示空間的小彩蛋": {
+    "message": "DLC: A Little Easter Egg",
+    "description": "Sidebar category label"
+  }
+}

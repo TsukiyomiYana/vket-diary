@@ -1,0 +1,315 @@
+---
+sidebar_position: 9
+---
+
+import StepGallery from '@site/src/components/StepGallery';
+
+# The Sea Slug's Exhibition Space
+
+> Come visit the [「スティウミ試遊ワールド」](https://vrchat.com/home/launch?worldId=wrld_87880be3-7d5c-4631-af0b-94e028b7ee6f)
+
+Originally, after finishing my Vket submission\
+and preparing the Unity Package for sale on BOOTH,\
+all that was left was to wait for Vket to open and sales to start.
+
+But... I suddenly really wanted to build a little space\
+where people could actually go in and play with the stinky tofu sea slug.
+
+Not just looking at pictures or videos —\
+actually picking it up, throwing it around, sitting on it, and finding out for themselves what on earth this thing is.
+
+~~Inner voice: exactly how much do you love stinky tofu~~
+
+So, I decided to build a tiny VRChat exhibition space.
+
+## Environment Design
+
+I am not an environment designer...\
+~~The environments I drew in the past got torn apart several times—they were almost bad enough to get me kicked out.~~
+
+So, sorry — there's no environment design draft to show you here. www\
+~~No sketches. I went straight into Blender and started putting it together.~~
+
+What I can share, though, is what I wrote in my notes app:
+
+* A small space
+* Like a dance studio? Mirrors on every wall? At least one mirror, anyway
+* Height? Width? Do I need to limit Avatar height?
+* A bright space, wooden floor, painted walls
+* Does it need to fit the setting? Sea slug >>> ocean? Ocean theme?
+* Add the Baby Sea Slug too? A space I can reuse later
+* The main character needs to stand out — palette... light brown / light yellow / blue and white / gray?
+* Where does the sign go? On the wall? Rounded rectangle? On the floor? A cafe-style chalkboard? An A-frame stand?
+* Tsukiyomi Yana, 素材屋まーにゃん, BOOTH link, X link (a QR code seems kind of pointless)
+
+I didn't have a complete design draft or a particularly detailed layout plan.\
+I basically wrote down everything that came to mind,\
+then went into Blender, building and adjusting as I went, gradually shaping the space into something I liked.
+
+I don't know any fancy environment design theory, and this is only a very small space anyway,\
+so the whole process was really just a constant cycle of adding things and taking them away.
+
+The WIP shots are here if you're curious.\
+~~They may not be much of a reference, since they're mostly screenshots I casually sent to friends mid-production...~~
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-057.webp', label: 'Blocking' },
+  { img: '/vket-diary/img/web-058.webp', label: 'Color' },
+  { img: '/vket-diary/img/web-059.webp', label: 'Blender Final' },
+  { img: '/vket-diary/img/web-060.webp', label: 'Unity Final' },
+]} />
+
+## Unity Project Setup
+Create a Unity project through **VRChat Creator Companion (VCC)**.\
+Choose the **World (2022)** template, then add **lilToon** via **Manage Packages**.
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-061.webp', label: 'Create a New VCC Project' },
+  { img: '/vket-diary/img/web-062.webp', label: 'VRChat World Project Setup' },
+  { img: '/vket-diary/img/web-063.webp', label: 'Add lilToon in VCC' },
+]} />
+
+> ※ When lilToon, the VRChat SDK, or other packages get updated in the future, you can also come back to Manage Packages to update them. Remember to back up your project before updating.
+
+Once that's done, press **Open Project** to launch Unity.
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-064.webp', label: 'Clean VRChat World Project Ready' }
+]} />
+
+Now you can import the finished Blender scene into Unity.
+
+### Blender → FBX Export Notes
+
+When exporting an FBX from Blender, these are the export settings I used:
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-065.webp', label: 'Blender FBX Export Settings' }
+]} />
+
+Before exporting, double-check the following:
+* Model dimensions, orientation, normals, and object names are correct.
+* Apply **Rotation & Scale** — confirm Rotation is `0, 0, 0` and Scale is `1, 1, 1`.
+* For objects that need to rotate or move independently, place the **Object Origin** at the actual pivot or movement reference point.
+
+> ※ The settings above mainly apply to static models.\
+※ If the model includes an armature, remember to uncheck Add Leaf Bones under Armature.\
+※ When exporting animation, make sure Bake Animation is checked.
+
+### Organizing Unity Assets
+
+After importing into Unity, my personal habit is to organize folders by purpose:
+* Materials : materials
+* Models : FBX models
+* Prefabs : prefabs
+* Scenes : Unity scene files
+* Scripts : scripts
+* Textures : textures (images)
+
+Then put the models, textures, and other assets into their folders,\
+create lilToon materials under Materials, and assign them to the corresponding models in the scene.
+
+That completes the basic model import and material setup.
+
+## Interactive Features
+
+Almost all of the interactive features this time were built with [LuraSwitch2](https://booth.pm/ja/items/1969082).
+
+The main features I used:
+* Mirror switching
+* Object position switching (Position A / Position B)
+* Pickup object return
+
+### Installing LuraSwitch2
+Installing [LuraSwitch2](https://booth.pm/ja/items/1969082) is simple.\
+Download the ZIP from BOOTH, then import the Unity Package inside directly into your Unity project.
+
+If a `QuickBrown` folder appears under Assets, the import succeeded.
+
+For detailed usage,\
+I strongly recommend reading the official [Lura Switch 2 説明書 (manual)](https://lurathunder.github.io/lura-switch-docs/).
+
+Below, I'll only note the parts I actually used and customized.
+
+### Three-State Mirror Switching (OFF / LQ / HQ)
+
+[LuraSwitch2](https://booth.pm/ja/items/1969082) already provides three-stage mirror switching out of the box,\
+but its default interface is made up of multiple switches and levers.
+
+That gives players fine-grained control,\
+but I prefer simplified operation — one button that cycles the mirror through its states.
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-066.webp', label: 'LuraSwitch2 Default' },
+  { img: '/vket-diary/img/web-067.webp', label: 'Single-Button Cycle' },
+]} />
+
+I kept the main `Switch_Mirror` switch and changed its **Switch Mode** to **External**.
+
+Without modifying [LuraSwitch2](https://booth.pm/ja/items/1969082)'s original scripts or structure —\
+reusing its existing button and event-call mechanism —\
+I wrote a separate `MirrorCycleSwitch.cs` to manage the mirror's three states.
+
+`MirrorCycleSwitch.cs` mainly controls:
+* MirrorActivator
+* LQ_Activator
+* HQ_Activator
+
+Every time the switch is pressed,\
+the script advances to the next state, updating both the mirror quality and the label on the switch panel.
+
+So what originally required multiple switches and levers to control OFF / LQ (transparent) / HQ (high quality)\
+now cycles through the states with a single button.
+
+The mirror switching is set to **Local**,\
+so every player can toggle the mirror for themselves without affecting anyone else.
+
+### Pickup Recovery
+
+The exhibition space has a stinky tofu sea slug you can pick up and throw.\
+To keep it from getting lost after being thrown out of the scene,\
+I needed a mechanism to bring it back to its original position.
+
+[LuraSwitch2](https://booth.pm/ja/items/1969082) already has a Respawn feature that returns objects to their initial positions.\
+If all you need is a manual reset, its built-in feature is enough.
+
+But on top of manual reset,\
+I also wanted the sea slug to auto-recover when thrown too far.
+
+So I wrote a separate `PickupRespawner.cs` with both manual reset and auto-recovery,\
+reusing [LuraSwitch2](https://booth.pm/ja/items/1969082)'s button interface and calling the script via **External**.
+
+Set **Switch Mode** to **External** and have the switch call `RespawnAll` when pressed,\
+and the designated Pickup objects return to their initial positions.
+
+Auto-recovery checks each Pickup object's position every 3 seconds.\
+If an object is more than 8 meters from its initial position and isn't being held by a player, it automatically returns to its original position.
+
+To prevent multiple players from recovering the same Pickup at once,\
+auto-recovery is handled only by the object's current owner.
+
+> ※ Both the 8-meter recovery distance and the 3-second check interval can be adjusted in the Inspector.\
+※ I know that making the invisible walls thicker would completely prevent it from being thrown out... ~~but honestly, I kind of want everyone to try squeezing it out. www~~
+
+## My First Skybox
+
+Once the Unity setup was mostly done, I looked back and...
+
+~~Uh... this Skybox probably needs some work.~~
+
+Naturally, ~~I had zero experience painting Skyboxes.~~\
+I couldn't really find one online that suited the space either, so after some thought...
+
+~~Guess I'll have to make one myself~~.
+
+A little research showed that Unity offers several ways to make a Skybox.\
+The built-in Skybox shaders fall roughly into four types:
+* [6 Sided](https://docs.unity3d.com/2023.1/Documentation/Manual/shader-skybox-6sided.html) : Six square images for front, back, left, right, up, down.
+* [Cubemap](https://docs.unity3d.com/6000.0/Documentation/Manual/shader-skybox-cubemap.html) : A Cubemap asset containing all six directional views.
+* [Procedural](https://docs.unity3d.com/2022.3/Documentation/Manual/shader-skybox-procedural.html) : Sky color, sun position, and atmosphere controlled by parameters.
+* [Panoramic](https://docs.unity3d.com/2021.3/Documentation/Manual/shader-skybox-panoramic.html) : A single 360° panoramic image as the sky.
+
+I chose the approach that felt most intuitive to me:\
+using a Blender UV Sphere to create a **Panoramic Skybox** texture.
+
+### How to Make a Skybox Texture in Blender
+
+First, create a **UV Sphere** in Blender.\
+Set both `Segments` and `Rings` to `64`, and `Radius` to `8 m`.
+
+Enter Edit Mode, press `A` to select all faces,\
+then press `Alt + N` and choose **Flip** to invert the normals.
+
+This UV Sphere is mainly for simulating how the Skybox will look.\
+Since a Skybox is viewed from inside the sphere looking out,\
+the inside needs to be the front face, so you can check the texture directly from within.
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-068.webp', label: 'Create a UV Sphere' },
+  { img: '/vket-diary/img/web-069.webp', label: 'Set Segments, Rings & Radius' },
+  { img: '/vket-diary/img/web-070.webp', label: 'Flip Normals' },
+]} />
+
+Next, switch to the **UV Editing** workspace and create a `4096 × 2048` image with a `2:1` ratio.\
+I named it `SkyboxMAP` (name it however you like).
+
+Create a material on the UV Sphere and assign `SkyboxMAP` to it.
+
+A UV Sphere comes with UVs that map to panoramic images out of the box,\
+so you can use it directly to check the texture's placement, proportions, and distortion in spherical space.
+
+Then switch to the **Texture Paint** workspace, roughly paint the composition and guide lines,\
+and export the image to Photoshop or CSP to finish the details.
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-071.webp', label: 'Create a 4096 × 2048 Image' },
+  { img: '/vket-diary/img/web-072.webp', label: 'Draft the Composition in Blender' },
+  { img: '/vket-diary/img/web-073.webp', label: 'Finish in CSP / Photoshop' },
+  { img: '/vket-diary/img/web-074.webp', label: 'Final Result in Blender' },
+]} />
+
+> ※ After flipping the normals, the front faces point inward — I recommend painting in the adjacent Image Editor instead.\
+※ If you're comfortable painting in Blender, you can also finish everything there without exporting.
+
+### Unity Skybox Setup
+
+Once the Skybox texture is done, import it into Unity and create a new Material.\
+I named the material `Sky_Pastel` (name it however you like).
+
+Select `Sky_Pastel`, and in the Inspector set the Shader to\
+: **Skybox > Panoramic**\
+
+Then drop the finished `SkyboxMAP` into the Spherical (HDR) texture slot.
+Everything else can stay at default.
+
+Here's a quick overview of what each option does:
+
+<details>
+<summary><strong>What each option does</strong></summary>
+
+| Option | Description |
+| --- | --- |
+| Tint Color | Overlays a color onto the entire Skybox texture.<br />When set to white, the texture keeps its original colors. |
+| Exposure | Adjusts the overall brightness of the Skybox texture.<br />`1` is the original brightness; higher is brighter, lower is darker. |
+| Rotation | Rotates the Skybox around the Y axis.<br />Useful for adjusting the background's orientation relative to the scene. |
+| Mapping | <ul><li>Latitude Longitude Layout: uses an equirectangular panoramic texture.</li><li>6 Frames Layout: uses a single unwrapped texture containing all six directional views.</li></ul> |
+| Image Type | <ul><li>360 Degrees: the image wraps around the entire scene.</li><li>180 Degrees: only uses the half-sphere; the back stays black, or is filled via Mirror on Back.</li></ul> |
+| 3D Layout | <ul><li>None: a regular 2D panoramic texture.</li><li>Side by Side: left/right-eye views placed side by side.</li><li>Over Under: left/right-eye views stacked vertically.</li></ul> |
+| Render Queue | Unity's queue classification that decides material rendering order.<br />Skybox materials can usually keep the shader default.<ul><li><strong>Background (1000)</strong>: scene backgrounds.</li><li><strong>Geometry (2000)</strong>: regular opaque objects like walls, floors, and furniture.</li><li><strong>AlphaTest (2450)</strong>: cutout materials like leaves or wire mesh.</li><li><strong>Transparent (3000)</strong>: semi-transparent materials like glass, water, or particles.</li><li><strong>Overlay (4000)</strong>: effects rendered on top of everything else, usually drawn last.</li></ul> |
+| Double Sided Global Illumination | Lets a model's back faces participate in light bounce calculations when the Progressive Lightmapper bakes global illumination.<br />Typically used for single-sided models like leaves, cloth, paper, or thin walls.<br />This option does not make back faces visible, nor does it add them to the Lightmap.<br />Skyboxes don't need it, so leave it off. |
+
+> ※ **Image Type** & **3D Layout** only appear when **Mapping** is set to **Latitude Longitude Layout**.
+</details>
+
+With the Skybox material set up, open: **Window > Rendering > Lighting**
+
+Switch to the **Environment** tab\
+and drag the `Sky_Pastel` material into the **Skybox Material** slot.
+
+Once done, the new sky will appear in both the Scene View and the Main Camera preview.
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-077.webp', label: 'Skybox Material Setup' }
+]} />
+
+> ※ If the Main Camera doesn't show the Skybox, make sure its **Clear Flags** is set to **Skybox**.\
+> ※ If seams appear in the Skybox texture, try disabling **Generate Mip Maps** in the texture's Import Settings.
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-075.webp', label: 'With Generate Mipmaps' },
+  { img: '/vket-diary/img/web-076.webp', label: 'Without Generate Mipmaps' },
+]} />
+
+### Do I Need to Bake Lighting?
+
+When a scene has lots of static objects and you want fixed shadows and indirect lighting,\
+while reducing the cost of realtime lighting to optimize performance,\
+that's when Bake Lighting is worth considering.
+
+Baked lighting information is stored in Baked Lightmaps,\
+while moving objects can use Light Probes to pick up ambient light from their surroundings.
+
+This exhibition space is small and has no complex lighting needs —\
+almost all of the shading and shadows were painted directly into the textures, so I skipped light baking entirely.
+
+Decide whether to use it based on the scale of your own scene and its performance requirements.

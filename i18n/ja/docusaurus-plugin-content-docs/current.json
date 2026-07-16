@@ -1,0 +1,18 @@
+{
+  "sidebar.tutorialSidebar.category.參展準備": {
+    "message": "出展準備",
+    "description": "Sidebar category label"
+  },
+  "sidebar.tutorialSidebar.category.製作・踩坑紀錄": {
+    "message": "制作・つまずきメモ",
+    "description": "Sidebar category label"
+  },
+  "sidebar.tutorialSidebar.category.販售・宣傳與資料備忘錄": {
+    "message": "販売・宣伝と資料メモ",
+    "description": "Sidebar category label"
+  },
+  "sidebar.tutorialSidebar.category.DLC : 展示空間的小彩蛋": {
+    "message": "DLC : 展示スペースの小ネタ",
+    "description": "Sidebar category label"
+  }
+}

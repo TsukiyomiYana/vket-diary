@@ -1,0 +1,315 @@
+---
+sidebar_position: 9
+---
+
+import StepGallery from '@site/src/components/StepGallery';
+
+# ウミウシの展示スペース
+
+> [「スティウミ試遊ワールド」](https://vrchat.com/home/launch?worldId=wrld_87880be3-7d5c-4631-af0b-94e028b7ee6f)へ、ぜひ遊びに来てください。
+
+本来、Vket の入稿を終えて、\
+BOOTH で販売する Unity Package も準備できたら、\
+あとは Vket の開幕と販売開始を待つだけでした。
+
+でも...急に、小さなスペースを作りたくなったんです。\
+みんなが実際に入って、スティウミで遊べる場所を。
+
+画像や動画を見るだけじゃなくて、\
+実際に持ち上げて、投げてみて、座ってみて、これが一体何なのかを自分で確かめられるように。
+
+~~心の声 : どれだけ臭豆腐が好きなの~~
+
+というわけで、小さな VRChat 展示スペースを作ることにしました。
+
+## シーンデザイン
+
+自分は空間デザイナーではありません...\
+~~以前作ったシーンも何度かボコボコにされて、危うく追い出されるほどでした。~~
+
+なので、ごめんなさい、ここに空間のデザイン画はありません www\
+~~ラフもなく、直接 Blender に入ってこねくり回しました。~~
+
+ただ、メモ帳に書いていたものなら共有できます :
+
+* 小さなスペース
+* ダンススタジオみたいな? 四方鏡張り? とにかく鏡は最低1枚
+* 高さ? 幅? Avatar の身長制限は必要?
+* 明るい空間、木の床、ペンキの壁
+* 世界観に合わせる必要ある? ウミウシ>>>海? 海洋テーマ?
+* ベビーウミウシも置く? あとで再利用できるスペースに
+* 主役を目立たせたい、配色は...ライトブラウン / ライトイエロー / 青 / 白 / グレー系?
+* 看板はどこ? 壁? 角丸の四角? 床置き? カフェの黒板? A型スタンド?
+* 月詠やな、素材屋まーにゃん、BOOTH リンク、X リンク (QR コードは意味なさそう)
+
+きちんとしたデザイン画もなければ、細かい配置図もありません。\
+思いついたことを全部書き出して、\
+あとは Blender の中で作りながら調整を重ね、少しずつ自分の好きな雰囲気に仕上げていきました。
+
+空間デザインの難しい理論なんて分かりませんし、それに今回は本当に小さなスペースだったので、\
+制作中は、ひたすら足したり減らしたりの繰り返しでした。
+
+WIP はここに置いておくので、興味があればどうぞ。\
+~~あまり参考にならないかもしれません。ほとんどが制作中に友達に送ったスクショなので...~~
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-057.webp', label: 'Blocking' },
+  { img: '/vket-diary/img/web-058.webp', label: 'Color' },
+  { img: '/vket-diary/img/web-059.webp', label: 'Blender Final' },
+  { img: '/vket-diary/img/web-060.webp', label: 'Unity Final' },
+]} />
+
+## Unity プロジェクト設定
+**VRChat Creator Companion (VCC)** で Unity プロジェクトを作成します。\
+**World (2022)** テンプレートを選んでプロジェクトを作成したら、**Manage Packages** から **lilToon** を追加します。
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-061.webp', label: 'Create a New VCC Project' },
+  { img: '/vket-diary/img/web-062.webp', label: 'VRChat World Project Setup' },
+  { img: '/vket-diary/img/web-063.webp', label: 'Add lilToon in VCC' },
+]} />
+
+> ※ lilToon や VRChat SDK などのパッケージにアップデートが来たときも、Manage Packages から更新できます。更新前にはプロジェクトのバックアップをお忘れなく。
+
+追加が完了したら、**Open Project** を押して Unity を開きます。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-064.webp', label: 'Clean VRChat World Project Ready' }
+]} />
+
+これで、Blender で完成させたシーンを Unity にインポートできます。
+
+### Blender → FBX 出力の注意事項
+
+Blender から FBX を出力するとき、私が使った出力設定はこちら :
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-065.webp', label: 'Blender FBX Export Settings' }
+]} />
+
+出力前に、以下を確認しておきましょう :
+* モデルのサイズ、向き、法線、オブジェクト名が正しいか。
+* **Rotation & Scale** を適用し、Rotation が `0, 0, 0`、Scale が `1, 1, 1` になっているか確認。
+* 単独で回転・移動させたいオブジェクトは、**Object Origin** を実際の回転軸や移動の基準点に置く。
+
+> ※ 上記の設定は主に静的モデル向けです。\
+※ モデルにアーマチュアが含まれる場合、Armature の Add Leaf Bones のチェックを外すのを忘れずに。\
+※ アニメーションを出力する場合は、Bake Animation にチェックが入っているか確認してください。
+
+### Unity アセットの整理
+
+Unity にインポートしたら、個人的な習慣として、ファイルの用途ごとにフォルダを整理しています :
+* Materials : マテリアル
+* Models : FBX モデル
+* Prefabs : Prefab
+* Scenes : Unity シーンファイル
+* Scripts : スクリプト
+* Textures : テクスチャ (image)
+
+次に、モデルやテクスチャなどのアセットを対応するフォルダに入れて、\
+Materials に lilToon マテリアルを作成し、シーン内の対応するモデルに適用します。
+
+これで基本的なモデルのインポートとマテリアル設定は完了です。
+
+## インタラクティブ機能
+
+今回のインタラクティブ機能は、ほとんどすべて [LuraSwitch2](https://booth.pm/ja/items/1969082) で作りました。
+
+主に使った機能：
+* ミラー切り替え
+* オブジェクトの位置切り替え（Position A / Position B）
+* Pickup オブジェクトのリスポーン
+
+### LuraSwitch2 のインストール方法
+[LuraSwitch2](https://booth.pm/ja/items/1969082) のインストールは簡単です。\
+BOOTH から ZIP をダウンロードし、中の Unity Package をそのまま Unity プロジェクトにインポートします。
+
+Assets に `QuickBrown` フォルダが現れたら、インポート成功です。
+
+詳しい使い方は、\
+公式の [Lura Switch 2 説明書](https://lurathunder.github.io/lura-switch-docs/) を直接読むことを強くおすすめします。
+
+以下では、実際に使い、独自に調整した部分だけを記録します。
+
+### ミラーの3段階切り替え（OFF / LQ / HQ）
+
+[LuraSwitch2](https://booth.pm/ja/items/1969082) には最初からミラーの3段階切り替え機能があります。\
+ただ、デフォルトの操作パネルは、複数のスイッチとレバーで構成されています。
+
+プレイヤーが自由に調整できる反面、\
+私は操作をシンプルにしたい派なので、ボタン1つでミラーの状態を順番に切り替えられるようにしたいと思いました。
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-066.webp', label: 'LuraSwitch2 Default' },
+  { img: '/vket-diary/img/web-067.webp', label: 'Single-Button Cycle' },
+]} />
+
+メインの `Switch_Mirror` スイッチは残しつつ、**Switch Mode** を **External** モードに変更しました。
+
+[LuraSwitch2](https://booth.pm/ja/items/1969082) の元の Script と構造には手を加えず、\
+既存のボタンとイベント呼び出しの仕組みをそのまま使う前提で、\
+ミラーの3つの状態を管理する `MirrorCycleSwitch.cs` を別に書きました。
+
+`MirrorCycleSwitch.cs` が主に制御するもの：
+* MirrorActivator
+* LQ_Activator
+* HQ_Activator
+
+スイッチを押すたびに、\
+Script が次の状態に切り替わり、ミラーの表示品質とスイッチパネルの文字も同時に更新されます。
+
+これで、本来なら複数のスイッチとレバーで操作する OFF / LQ (透明) / HQ (高画質) の切り替えが、\
+ボタン1つで順番にサイクルできるようになりました。
+
+ミラーの切り替えは **Local** に設定してあるので、\
+プレイヤーごとに自分だけのミラー表示を切り替えられて、他の人には影響しません。
+
+### Pickup リスポーン
+
+展示スペースには、持ち上げて投げられるスティウミが1匹います。\
+シーンの外に投げられて行方不明にならないように、\
+元の位置に戻れる仕組みをシーン内に用意する必要がありました。
+
+[LuraSwitch2](https://booth.pm/ja/items/1969082) には、オブジェクトを初期位置に戻す Respawn 機能が最初からあります。\
+シンプルな手動リセットだけでいいなら、元の機能で十分です。
+
+ただ、手動リセットに加えて、\
+スティウミが遠くに投げられたときの自動リスポーンも欲しかったのです。
+
+そこで `PickupRespawner.cs` を別に書いて、手動リセットと自動リスポーン機能を追加しました。\
+[LuraSwitch2](https://booth.pm/ja/items/1969082) のボタンインターフェースをそのまま使い、**External** 経由でこの Script を呼び出します。
+
+**Switch Mode** を **External** に設定し、スイッチを押したときに `RespawnAll` を呼ぶようにすれば、\
+指定した Pickup オブジェクトが初期位置に戻ります。
+
+自動リスポーンは、3秒ごとに Pickup オブジェクトの位置をチェックします。\
+オブジェクトが初期位置から8メートルを超えて離れていて、かつプレイヤーに持たれていない場合、自動的に元の位置に戻ります。
+
+複数のプレイヤーが同時に同じ Pickup をリスポーンさせないように、\
+自動リスポーンはそのオブジェクトの現在のオーナーだけが処理します。
+
+> ※ 8メートルのリスポーン距離と3秒のチェック間隔は、どちらも Inspector で自由に調整できます。\
+※ 空気壁を厚くすれば、外に投げ出されるのを完全に防げるのは知っています...~~でも、正直みんなに押し出しチャレンジしてほしいんですよね www~~
+
+## 初めての Skybox
+
+Unity の設定がだいたい終わって、ふと振り返ると...
+
+~~えっと...この Skybox、なんとかしないとダメみたいですね。~~
+
+当然、~~Skybox を描いた経験なんてありません。~~\
+ネットでもこのスペースに合う Skybox は見つからず、考えた結果...
+
+~~自分で産むしかないみたいです~~。
+
+少し調べたところ、Unity で Skybox を作る方法はいろいろあり、\
+組み込みの Skybox Shader は大きく4種類に分けられます：
+* [6 Sided](https://docs.unity3d.com/2023.1/Documentation/Manual/shader-skybox-6sided.html) : 前後左右上下に対応する6枚の正方形画像を使用。
+* [Cubemap](https://docs.unity3d.com/6000.0/Documentation/Manual/shader-skybox-cubemap.html) : 6方向の画面を含む Cubemap アセットを使用。
+* [Procedural](https://docs.unity3d.com/2022.3/Documentation/Manual/shader-skybox-procedural.html) : パラメータで空の色、太陽の位置、大気効果を調整。
+* [Panoramic](https://docs.unity3d.com/2021.3/Documentation/Manual/shader-skybox-panoramic.html) : 1枚の360°パノラマ画像を空の背景として使用。
+
+というわけで、自分にとって一番直感的な方法として、\
+Blender の UV Sphere を使って **Panoramic Skybox** テクスチャを作ることにしました。
+
+### Blender で Skybox テクスチャを作る方法
+
+まず、Blender で **UV Sphere** を1つ作成します。\
+`Segments` と `Rings` をどちらも `64` に、`Radius` を `8 m` に設定します。
+
+次に Edit Mode に入り、`A` で全ての面を選択、\
+`Alt + N` を押して **Flip** で法線を反転します。
+
+この UV Sphere は、主に Skybox の見え方をシミュレートするためのものです。\
+Skybox は球体の内側から外に向かって見るものなので、\
+球の内側を正面にしておくと、内部から直接テクスチャの見え方を確認できます。
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-068.webp', label: 'Create a UV Sphere' },
+  { img: '/vket-diary/img/web-069.webp', label: 'Set Segments, Rings & Radius' },
+  { img: '/vket-diary/img/web-070.webp', label: 'Flip Normals' },
+]} />
+
+続いて **UV Editing** ワークスペースに切り替え、`4096 × 2048`、比率 `2:1` の画像を作成します。\
+ここでは `SkyboxMAP` と名付けました (名前はお好みで)。
+
+UV Sphere にマテリアルを作成し、`SkyboxMAP` をマテリアルに割り当てます。
+
+UV Sphere は作成時点で、パノラマ画像に対応する UV を持っています。\
+そのため、テクスチャが球形空間の中でどんな位置・比率・歪みになるか、そのまま確認できます。
+
+そのあと **Texture Paint** ワークスペースに切り替え、まず大まかな構図とガイド線を描き、\
+画像を Photoshop や CSP に書き出してディテールを仕上げます。
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-071.webp', label: 'Create a 4096 × 2048 Image' },
+  { img: '/vket-diary/img/web-072.webp', label: 'Draft the Composition in Blender' },
+  { img: '/vket-diary/img/web-073.webp', label: 'Finish in CSP / Photoshop' },
+  { img: '/vket-diary/img/web-074.webp', label: 'Final Result in Blender' },
+]} />
+
+> ※ 法線を反転すると正面が内側になるので、隣の Image Editor で描くことをおすすめします。\
+※ Blender での描画に慣れている人は、書き出さずにそのまま Blender 内で完成させても OK です。
+
+### Unity の Skybox 設定
+
+Skybox テクスチャが完成したら、画像を Unity にインポートし、新しい Material を作成します。\
+ここではマテリアルを `Sky_Pastel` と名付けました (名前はお好みで)。
+
+`Sky_Pastel` を選択し、Inspector で Shader を\
+: **Skybox > Panoramic** に設定します。\
+
+次に、完成した `SkyboxMAP` を Spherical (HDR) のテクスチャスロットに入れます。
+他の設定はデフォルトのままで OK です。
+
+ここで、各項目の用途を簡単にまとめておきます：
+
+<details>
+<summary><strong>各項目の用途を見る</strong></summary>
+
+| 項目 | 説明 |
+| --- | --- |
+| Tint Color | Skybox テクスチャ全体に色を重ねます。<br />白に設定すると、元のテクスチャの色が維持されます。 |
+| Exposure | Skybox テクスチャ全体の明るさを調整します。<br />`1` が元の明るさで、値が大きいほど明るく、小さいほど暗くなります。 |
+| Rotation | Skybox を Y 軸中心に回転させます。<br />背景とシーンの相対的な向きの調整に使えます。 |
+| Mapping | <ul><li>Latitude Longitude Layout：緯度経度で展開されたパノラマテクスチャを使用。</li><li>6 Frames Layout：6方向の画面を含む1枚の展開テクスチャを使用。</li></ul> |
+| Image Type | <ul><li>360 Degrees：画像がシーン全体をぐるりと囲みます。</li><li>180 Degrees：半球分だけ使用し、背面は黒のまま、または Mirror on Back でミラー補完。</li></ul> |
+| 3D Layout | <ul><li>None：通常の 2D パノラマテクスチャ。</li><li>Side by Side：左右の目の画面を横並びに配置。</li><li>Over Under：左右の目の画面を上下に配置。</li></ul> |
+| Render Queue | Unity がマテリアルの描画順を決めるためのキュー分類。<br />Skybox マテリアルは通常、Shader のデフォルト値のままで OK。<ul><li><strong>Background（1000）</strong>：シーンの背景用。</li><li><strong>Geometry（2000）</strong>：壁、床、家具などの一般的な不透明オブジェクト用。</li><li><strong>AlphaTest（2450）</strong>：葉やフェンスなどのカットアウトマテリアル用。</li><li><strong>Transparent（3000）</strong>：ガラス、水面、パーティクルなどの半透明マテリアル用。</li><li><strong>Overlay（4000）</strong>：他の描画の上に重ねるエフェクト用。通常は最後に描画。</li></ul> |
+| Double Sided Global Illumination | Progressive Lightmapper でグローバルイルミネーションをベイクするとき、モデルの裏面も光の反射計算に参加させます。<br />通常は葉、布、紙、薄い壁などの片面モデルに使用します。<br />このオプションで裏面が実際に表示されたり、裏面が Lightmap に追加されたりすることはありません。<br />Skybox には不要な機能なので、オフのままで OK です。 |
+
+> ※ **Image Type** & **3D Layout** は、**Mapping** で **Latitude Longitude Layout** を選択したときだけ表示されます。
+</details>
+
+Skybox のマテリアル設定が完了したら、**Window > Rendering > Lighting** を開きます。
+
+**Environment** タブに切り替えて、\
+先ほど作成した `Sky_Pastel` マテリアルを **Skybox Material** スロットにドラッグします。
+
+完了すると、Scene View と Main Camera のプレビューに新しい空が表示されます。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-077.webp', label: 'Skybox Material Setup' }
+]} />
+
+> ※ Main Camera に Skybox が表示されない場合は、Main Camera の **Clear Flags** が **Skybox** に設定されているか確認してください。\
+> ※ Skybox テクスチャに継ぎ目が出る場合は、テクスチャの Import Settings で **Generate Mip Maps** をオフにしてみてください。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-075.webp', label: 'With Generate Mipmaps' },
+  { img: '/vket-diary/img/web-076.webp', label: 'Without Generate Mipmaps' },
+]} />
+
+### Bake Lighting は必要?
+
+シーン内に動かないオブジェクトが大量にあって、固定の影と間接光の効果を残したい、\
+同時に Realtime Lighting の計算負荷を減らして、パフォーマンスをさらに最適化したい。\
+そんなときは Bake Lighting を検討する価値があります。
+
+ベイクされたライティング情報は Baked Lightmaps に記録され、\
+動くオブジェクトは Light Probes と組み合わせて、周囲の環境光情報を取得できます。
+
+今回の展示スペースは規模が小さく、複雑なライティングの必要もなかったので、\
+明暗や影の効果はほぼすべてテクスチャに直接描き込み、ライトベイクは行いませんでした。
+
+必要な方は、自分のシーンの規模とパフォーマンス要件に合わせて、使うかどうか判断してください。

@@ -1,0 +1,664 @@
+---
+sidebar_position: 8
+---
+
+import StepGallery from '@site/src/components/StepGallery';
+
+# The Product File Saga: Blood, Sweat, and Tears
+
+> Previously on this diary: what follows is a long, meandering wall of text\
+that simply documents how one person stumbled, took every possible detour, and eventually got the thing made.\
+It's long — read at your own discretion, or jump straight to the section you want from the menu on the right.
+
+In the original plan,\
+the Stinky Tofu Sea Slug was just a piece of furniture you could place in a World.
+
+The only interaction was sitting on it —\
+its entire identity was "a cushion you can sit on (座れるクッション)". That's it.
+
+Then while preparing the Vket submission,\
+I discovered that objects in a World can also be set up as Pickups.
+
+~~And if it can be picked up... surely it can also be thrown, right? (?)~~
+
+And so, it gained a pick-up-and-throw feature.
+
+Later, while a friend was helping me test, we accidentally discovered\
+it could also be turned into an Avatar accessory, attached via Modular Avatar.\
+
+Put it on your head or shoulder, and it's basically a little pet.
+
+Then during further testing and actual use,\
+even more... completely unplanned ways to use it kept appearing... `( °ヮ° ) ?`
+
+At this point, it had evolved from a sittable piece of furniture\
+into something with so many uses it defies definition — limited only by the user's imagination...
+
+A multi-purpose stinky tofu `(◐‿◑)﻿`
+
+## 3 Uses, 3 Tofus
+
+Given that I knew absolutely nothing about VRChat development at the time,\
+the early development process was essentially me walking into wall after wall.
+
+At first, I had no idea that\
+custom interaction logic in a VRChat World has to be built with Udon / UdonSharp,\
+nor did I understand that Worlds and Avatars use completely different SDKs and feature architectures.
+
+I genuinely believed Avatar stuff and World stuff were interchangeable...
+
+Which means I naively assumed I could bundle all 3 uses —\
+Pickup, Sit, and Avatar accessory —\
+into one single sea slug Prefab, and let users pick which feature to enable.
+
+Well... ~~I thought wrong.~~
+
+The World version and the Avatar accessory version must be built separately.
+
+And even within a World,\
+putting Sit (VRC_Station) and Pickup (VRC_Pickup) on the same object can make them interfere with each other.
+
+So practically speaking,\
+giving each sea slug one main function makes it much simpler to use.
+
+In other words, if I wanted all of these features,\
+I'd need 2 sets of files and 3 sea slug Prefabs:
+* World / Sit (for sitting)
+* World / Pickup (for grabbing and throwing)
+* Avatar / MA toggle (for wearing)
+
+Just understanding this took me about a full evening of repeated wall-slamming.\
+~~I came out of it teary-eyed and thoroughly defeated.~~
+
+## Looks Like C# From Afar, But It's U# (UdonSharp) Up Close
+
+Before we go on, let me strongly recommend this Udon beginner's guide:\
+[ぽんぽこほんぽ｜UdonSharp（U#）入門 v4.5｜VRChatワールド・ギミックをゼロから作る初心者向け教科書](https://pon-poko-pon.booth.pm/items/4409611)
+
+If you're interested in making VRChat Worlds,\
+I really cannot recommend it enough!
+
+~~Its only flaw is being 1,152 pages of Japanese!~~
+
+Anyway, back to the story. This was the first wall I slammed into.
+
+When preparing the Vket submission files earlier,\
+I had simply followed the instructions: add `VRC_Pickup` to an object,\
+tweak the Inspector settings, and it basically just worked.
+
+Because these were all pre-built VRChat SDK components,\
+there was zero programming involved.
+
+~~I was using them without understanding a single thing.~~
+
+So at the time, I honestly thought "Udon" was just a name —\
+like VRChat's fancy way of saying "Script".
+
+~~Which is true. But also very much not true.~~
+
+Only when I actually had to write my own feature did I slam face-first into this wall.
+
+My first feature was extremely simple:
+* When a player sits down, the tofu plays a squished BlendShape animation
+* When the player leaves, the tofu returns to normal
+
+So I naturally did what you'd do in regular Unity:\
+created a normal C# script, wrote a very simple `SitSquish.cs`.
+
+Then I started testing, full of hope, and...
+
+Nothing.
+
+Absolutely nothing happened.
+
+wwww... Huh?\
+Why? Did I write something wrong? 囧
+
+I checked the code over and over and found nothing.
+
+Only after researching did I learn: a regular Unity C# script\
+can't be used directly as an executable script in a VRChat World.\
+You have to create a `U# Script` instead.
+
+When you create a U# Script, Unity generates a `.cs` file to write your code in,\
+plus a linked `UdonSharp Program Asset`.
+
+The code still lives in the `.cs` file, but VRChat doesn't run that C# directly.\
+It has to be converted by UdonSharp first before it can run in a World.
+
+UdonSharp looks like C# and mostly writes like C#,\
+but not every C# feature works in it.
+
+It only supports a subset of C#, has its own restrictions,\
+and its own dedicated ways of handling VRChat World interactions.
+
+For example, detecting when a player sits down or leaves a seat\
+can't be done the regular Unity way — you have to use the events VRChat provides.
+
+On top of that, if a feature needs to be visible to all players,\
+you also have to think about object ownership and network sync.
+
+As for the deeper principles behind all this...
+
+Honestly, I still don't fully get them. `(ㆆᴗㆆ)`\
+~~I'm really not built for programming.~~
+
+But by this point, one thing was absolutely certain:\
+UdonSharp plays by its own rules.
+
+## Feature #1: Sit Down, Get Squished
+
+Once I knew the correct way to create UdonSharp scripts,\
+the sit-and-squish feature actually came together without much trouble.
+
+Initially, I recorded the tofu's BlendShape in an Animation Clip\
+and used an Animator to play the squish and recovery animations.
+
+If squishing were the only feature, that approach would've been perfectly fine.
+
+But once pose switching entered the picture,\
+every sitting pose would need its own Animation Clip too.
+
+You could combine poses and squish via Animator Layers or extra States,\
+but that means managing more parameters, transitions, and playback states —\
+and the whole structure keeps getting more complicated.
+
+Since the squish effect is really just a change in BlendShape weight,\
+I rewrote `SitSquish.cs` to control the BlendShape weight directly in code.
+
+When a player sits, the script gradually raises the BlendShape weight, slowly squishing the tofu.\
+When they stand up, it eases the weight back to `0`, restoring the original shape.
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+ { img: '/vket-diary/video/video-002.mp4', label: 'Squish Test', video: true }
+]} />
+
+This way, poses are handled by Animation Clips,\
+while the squish effect is controlled independently by code.
+
+The two features coexist in a much simpler way, and everything's easier to manage.
+
+## Ordeal #2: The Difficult Birth of Sit Poses (and a Broken Ankle)
+
+With squishing done, the next task was deciding the Avatar's sitting pose.
+
+The original concept was a duck sit (ぺたん座り),\
+with both hands reaching forward to hold the sea slug's ears.
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-078.webp', label: 'W-Sit Holding the Ears' },
+  { img: '/vket-diary/img/web-079.webp', label: 'Rig for the Same Pose' },
+]} />
+
+Adorable in theory — and honestly, it looked great when posed too.
+
+### Sea Slug Ears, I Just Can't Hold You
+
+But once I started testing with different Avatars, it quickly became clear it wasn't that simple.\
+Avatars vary in height, arm length, and skeleton proportions.
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-080.webp', label: <a href="https://booth.pm/ja/items/6905661" target="_blank">3Dモデル【星凪 ゆらぎ】</a> },
+  { img: '/vket-diary/img/web-081.webp', label: <a href="https://booth.pm/ja/items/7740438" target="_blank">3Dモデル【うめ】</a> },
+  { img: '/vket-diary/img/web-082.webp', label: <a href="https://alua7.booth.pm/items/3978893" target="_blank">3Dモデル【Nys (ネイス)】</a> },
+  { img: '/vket-diary/img/web-084.webp', label: <a href="https://mofumofumotimoti.booth.pm/items/2029110" target="_blank">3Dモデル【もちねこ】</a> },
+]} />
+
+> ※ Click each Avatar's name to visit its BOOTH product page.
+
+Making every Avatar sit on the tofu\
+AND keep their hands near the sea slug's ears was clearly unrealistic.
+
+Especially considering non-VR players,\
+whose hand positions can't be freely adjusted the way VR players' can.
+
+So in the end, I gave up on the ear-holding motion\
+and switched to a simpler duck sit that adapts more easily to different Avatars.
+
+But did you think that was the end of the problems?
+
+Nope.\
+The biggest problem was hiding in the most fundamental part.
+
+### The Ankle That Broke Inside Unity
+
+Initially, I posed the model in Blender, recorded the pose as a one-frame animation,\
+and exported it together with the humanoid skeleton as an FBX for Unity.
+
+Importing the original T-Pose skeleton alone: Humanoid looked perfectly fine.\
+But importing the skeleton together with the sitting animation... things started to look very wrong.
+
+I adjusted the rig and pose over and over, but never found a stable fix.
+
+A senior classmate later explained: having correct Humanoid bone mapping\
+doesn't guarantee that the skeleton's base pose is also correct.
+
+Unity tries to calibrate imported skeletons into the T-Pose that Humanoid requires —\
+and after calibration, the rotations below the knees were visibly wrong...
+
+So even though every bone name and mapping was perfectly fine,\
+opening the Humanoid T-Pose revealed twisted lower legs,\
+with the ankles bent at angles that can only be described as fractured.
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-085.webp', label: 'Deformed Leg in Unity 1' },
+  { img: '/vket-diary/img/web-086.webp', label: 'Broken Ankle in Unity 2' },
+  { img: '/vket-diary/img/web-087.webp', label: 'Deformed Humanoid T-Pose' },
+  { img: '/vket-diary/img/web-088.webp', label: 'Seated Pose Rig' },
+]} />
+
+The only workaround I could think of at the time\
+was to import the clean, error-free T-Pose skeleton into Unity,\
+then build the sitting pose by rotating bones directly in Unity's built-in Animation window.
+
+~~Posing a character in Unity's Animation window is not what I'd call a human-friendly workflow.~~
+
+And that's exactly when a mighty classmate of mine recommended an absolute godsend:\
+[AvaPo！｜Unityでポーズ作成＆撮影ツール](https://booth.pm/ja/items/7249970)
+
+With AvaPo!, I could adjust the pose directly via blue control points on each joint.
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-089.webp', label: 'AvaPo! Blue Control Points' }
+]} />
+
+Compared to editing every single bone rotation value in Unity's Animation window,\
+AvaPo!'s workflow is worlds more intuitive!
+
+The pose I'd been agonizing over for half a day\
+was done almost instantly with this tool. `ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧`
+
+## A Sudden Idea: What If You Could Switch Poses While Sitting?
+
+After finishing the default duck sit, a thought struck me:\
+"If you could freely pick different poses while sitting... wouldn't that be fun?"
+
+~~Once an idea like that appears, there's no stopping the flood.~~
+
+Before I knew it, I had made 8 sitting poses.
+
+With the poses done, the next question was:\
+**How do players actually switch between these 8 poses?**
+
+I listed the requirements:
+* After sitting, players can freely switch between 8 poses → needs a UI menu
+* The menu should show the currently selected pose
+* Selecting a pose should actually change the Avatar's posture
+* When the player leaves, the pose must be properly released so the Avatar returns to normal
+
+...And thus began the most grueling battle of this entire project.
+
+### Round 1: PoseIndex, Stuck at Zero
+
+My first attempt: all 8 poses share a single VRC Station,\
+with an Animator reading a `PoseIndex` value to switch to the matching pose.
+
+I built 8 pose States in the Animator,\
+connected Any State to each of them,\
+and let `PoseIndex` decide which pose plays.
+
+Each UI button then used `SendCustomEvent()`\
+to call `_SelectPose0`, `_SelectPose1`... up to `_SelectPose7`.
+
+In theory, once `SitPoseSelector` received a button event,\
+it would update `PoseIndex`, and the Animator would switch to the corresponding State.
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-090.webp', label: 'SitPoseSelector & Animator Setup' },
+  { img: '/vket-diary/img/web-091.webp', label: '8 Pose States & UI Events' },
+]} />
+
+Then I entered Play Mode and tested with Invoke...
+
+**No response. Completely dead in the water.**
+
+No matter which pose I selected, `PoseIndex` stayed frozen at its default `0`,\
+and the Animator, naturally, never switched.
+
+Attempt one: dead at `0`.
+
+### Round 2: Lost in the Fog
+
+After the first failure, I added `Debug.Log` calls throughout the code\
+to pinpoint exactly which link in the chain was broken.
+
+Things like:
+* Is the button actually calling the script?
+* Is `_SelectPose()` receiving the correct number?
+* Is `PoseIndex` actually being written to the parameter?
+* Is the `Animator` receiving the correct value?
+
+But after reading the `Debug.Log` output, I was more confused than before.
+
+✅ The button fires correctly,\
+✅ `_SelectPose4()` gets called,\
+✅ `SetInteger("PoseIndex", 4)` executes normally.
+
+According to the Console, every single link in the chain looked fine.
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-092.webp', label: 'Debug Log: Button, PoseIndex & Animator Working' }
+]} />
+
+Since the button fired and the parameter was written,\
+I started suspecting the problem wasn't "does the value get in" —\
+but rather: was something overwriting it afterwards?
+
+Maybe the VRC Station resets the Animator's state back to default while running...?
+
+Fine — then I'll just keep re-writing the current `PoseIndex`\
+every frame in `Update()`.
+
+In Unity's Play Mode, this actually seemed to work.\
+`PoseIndex` changed properly, and the scene's Animator switched to the matching State.
+
+But then, in actual VRChat — sit on the chair, press the button...\
+
+**Not even the hem of the Avatar's clothes moved.**
+
+`PoseIndex` was being set. The scene's Animator was responding correctly.\
+But all those changes only applied to the scene object — none of it reached the Avatar's actual pose.
+
+Which means the real problem was likely somewhere\
+in the link between the Animator and the VRC Station.
+
+Next step: find where that link was broken.
+
+### Round 3: Seriously. WHY.
+
+Since `PoseIndex` was definitely changing,\
+the next thing to verify was whether the problem was in the Transitions.
+
+This time, in addition to `SetInteger()` + Transitions,\
+I tried two different forms of `Animator.Play()` to directly force specific States,\
+and added State Hash logging to confirm the switches.
+
+`PoseIndex` changed. `Animator.Play()` was called.\
+One frame later, the Animator's State Hash was indeed different.
+
+The Console output was almost entirely green lights.\
+At the very least, the Animator was definitely switching States.
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-093.webp', label: 'Animator.Play(): State Hash Updated' }
+]} />
+
+And then, in actual VRChat testing...
+
+**The Avatar remained perfectly, absolutely motionless.**
+
+RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR...\
+なぜだ！！！！！(WHYYYY!!!!!) `Melt╰(〒皿〒)╯Down`
+
+### Round 4: ALL IN Blend Tree!!
+
+Maybe... the problem was the Animator's switching structure itself...?
+
+This time, I deleted the whole multi-State-and-Transition setup\
+and put all 8 pose animations into a single Blend Tree.
+
+A Blend Tree selects or blends between multiple Animation Clips based on a parameter value.\
+So I used a Float parameter, `PoseBlend`, mapping different values to the 8 poses.
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-094.webp', label: '8-Pose Blend Tree with PoseBlend' }
+]} />
+
+In theory, changing `PoseBlend` should directly produce the matching pose.
+
+And in Unity's Play Mode,\
+the Blend Tree did respond to `PoseBlend` and play the correct animations.
+
+I had literally brought out the coconut juice, ready to celebrate.\
+...Was I finally free?!
+
+Into VRChat. Sit on the chair. With trembling hands, I pressed the button.\
+——Same pose as always.
+
+...I burned out completely and crumbled into ash. `ヽ(・､ ．)ﾉ))ｺｹｯ`
+
+### Final Round: One Radish, One Hole
+
+Attempt after attempt, I kept getting stuck at the exact same place.\
+I'd been staring at the same setup for so long that I'd gone snow-blind to it —\
+the longer I looked, the less I could see.
+
+So I shut the project down, dragged my battered soul to bed, and passed out.
+
+But apparently, the part of me that refused to give up\
+~~kept debugging inside my dreams.~~
+
+Dream-me suddenly realized:\
+Could it be... that VRChat's sitting behavior is fundamentally based on the **VRC Station**?
+
+Maybe what actually needs switching isn't the Animator State at all —\
+but the VRC Station itself?
+
+After all, everything I'd been modifying was animation state inside the same single VRC Station.\
+No matter how the parameters and States switched, the player never actually changed Stations. Not once.
+
+In other words: I kept trying to swap the pose within the same hole,\
+but I never actually moved the player into a different hole.
+
+As the saying goes: one radish, one hole. (One seat per pose.)
+
+So — fine. Let's just make 8 VRC Stations,\
+one Station per pose.
+
+When a player selects a different pose, the script first exits them from the current Station,\
+then enters them into the Station matching the new pose.
+
+To pull this off, I needed to modify the original SitPoseSelector\
+and add a new script, SitPoseStationRelay:
+* `SitPoseSelector`: tracks the current pose, receives button input, and moves the player between Stations.
+* `SitPoseStationRelay`: attached to every Station, relaying player enter/exit events back to `SitPoseSelector`.
+
+This way, the controller script always knows which Station the player is in,\
+and on pose switch, exits the old seat before entering the new one.
+
+The Blend Tree from before wasn't wasted either —\
+it still manages the pose animation for each Station.
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-095.webp', label: '8 VRC Stations for 8 Poses' },
+  { img: '/vket-diary/img/web-096.webp', label: 'Stations & Pose Buttons in SitPoseSelector' },
+]} />
+
+...And that's exactly where the dream ended, and I snapped awake.\
+~~Something told me this was not the time to keep sleeping.~~
+
+Before the dream could fade,\
+I scrambled to the computer and started implementing immediately.
+
+And finally...\
+IT WOOOORKED～～～～!!!! ` ٩(ˊᗜˋ*)و`
+
+Dream-me is the strongest!! `( ◡̀_◡́)ᕤ`\
+That version of me has saved me countless times... how do they even do it?
+
+I'm still not sure this is the "correct" solution,\
+but at the very least, this approach achieves exactly what I needed.
+
+~~If it works, it's a good solution. Right?~~ `:>`
+
+## Hehe, You Can't See Me ｜ωФ)ｼﾞｰ
+
+The pose-switching feature that squeezed me dry was finally complete.
+
+But I quickly noticed another problem:\
+**The menu shows up in camera shots!**
+
+This is a serious problem!
+
+VRChat players and cameras are inseparable — who doesn't take photos?\
+Nobody wants a giant pose menu photobombing every shot!
+
+Absolutely unacceptable!!
+
+So I... yes, my old habit kicked in again.\
+~~I assumed I could just move the menu to the **UI Layer** and call it a day.~~
+
+To be fair, the direction wasn't wrong:\
+menus on the **UI Layer** are indeed excluded from VRChat's camera by default.
+
+But...\
+~~you know... sometimes you really don't want to hear this BUT.~~
+
+**Players could no longer interact with the menu either.**
+
+A bit of research revealed:\
+in VRChat, the player's interaction raycast ignores the **UI Layer**.
+
+So a menu on the UI Layer:\
+players can still see it, VRChat's camera won't photograph it by default,\
+but the player's pointer can no longer click any of its buttons.
+
+Can't photograph it, can see it, can't press it... (wry smile)
+
+Well then... the only remaining option I could think of\
+was hiding it with a shader.
+
+However, the `Image` used in UI and the text renderer `TextMeshPro`\
+use different texture data and shader structures.
+
+`Image` mainly uses Sprite textures,\
+while `TextMeshPro` renders text via glyph data in a Font Atlas.
+
+So I had to write two separate shaders:
+* One to hide the UI Image
+* One to hide the TextMeshPro text
+
+The goal: a menu that displays normally to the player's eyes, with fully working buttons —\
+but which never, ever appears in shots taken by VRChat's camera.
+
+Here's the key concept:\
+VRChat provides a global shader variable called `_VRChatCameraMode`.
+
+In the player's normal view, its value is `0`.\
+But when the frame is being rendered by VRChat's handheld camera or screenshot function, it becomes a different value.
+
+In other words,\
+all my shader has to do is check the value of `_VRChatCameraMode`.
+
+When it's no longer `0`,\
+the current frame is being rendered by VRChat's camera or screenshot function.
+
+At that point, use `discard` to throw away those pixels — the menu simply never gets drawn into the camera's image.
+
+With this one check, the goal is achieved:\
+**visible to players, clickable by players, invisible only to VRChat's camera.**
+
+<StepGallery steps={[
+  { img: '/vket-diary/img/web-107.webp', label: 'UI Visible' },
+  { img: '/vket-diary/img/web-108.webp', label: 'UI Hidden from VRC Camera' },
+  { img: '/vket-diary/img/web-109.webp', label: 'UI Hidden in Photos' },
+]} />
+
+## Hands-On Testing with VR Players
+
+I mainly test in non-VR mode,\
+so I had no way to confirm how everything feels with an actual VR headset on.
+
+So I asked a friend who regularly plays in VR to help with hands-on testing.\
+My friend is an absolute legend... `ᕙ(  •̀ ᗜ •́  )ᕗ`
+
+She helped test:
+* How each pose behaves across Avatars of different body types
+* Whether the menu and the "…" button are easy to operate in VR
+* Grabbing, throwing, and tossing the sea slug back and forth in VR
+
+Overall, no major usability problems.
+
+I'd been worried the menu — collapsed into a "…" icon — might still block the player's view.\
+Turns out it was far less intrusive than I'd feared.
+
+### Seat Position Across Different Avatars
+
+Even before my friend's testing,\
+I'd already noticed that different Avatars end up sitting in different positions.
+
+Since every Avatar differs in height, proportions, and skeleton,\
+some characters float above the cushion, some sink into the sea slug,\
+and forward/backward alignment can drift too.
+
+The model I mainly used while creating the poses was Tsuyuna,\
+whose original Avatar Height is `0.92m`.
+
+To give Avatars of different body types the best possible experience,\
+I tested the poses with roughly 22 Avatars of varying builds.
+
+> For the list of Avatars used in testing, see: [Tools & Materials](https://tsukiyomiyana.github.io/vket-diary/tools-and-materials)
+
+The result: after adjusting their height to `0.90m–0.93m`,\
+about 80% of the Avatars could use the current poses without issues.
+
+That said, Avatars in skirts may still experience clipping or deformed hems in certain poses.\
+That part, unfortunately, seems to be beyond what I can fully prevent.
+
+~~And I thought that meant I'd found the solution.~~
+
+### Hand the Controls to the Players
+
+During real testing, my friend ran into the same seat-height issue.
+
+She told me that in VR, players can adjust their seated position themselves after sitting down —\
+but in non-VR mode, there's no equally intuitive way to do it.
+
+She also mentioned she'd seen height-adjustment levers for seats in other Worlds.
+
+...Huh!? Wait. That's it!!\
+Isn't that the answer right there?
+
+YES!!\
+**Just let the players adjust it themselves!**
+
+So I went back and added seat position controls to the menu:
+* **Seat Height**: adjust the seat's height
+* **Seat Depth**: adjust the seat's forward/backward position
+* **Reset**: restore the default position
+
+Besides the sliders, I also added `－ / ＋` buttons for fine-tuning,\
+so players can dial in the perfect position for their own Avatar.
+
+I'm truly grateful to the friend who did the testing.\
+She didn't just provide test videos — she wrote incredibly detailed feedback notes too.
+
+**Every single piece of feedback helped me enormously.**
+
+You are a genuinely dedicated, responsible, and thoughtful person.\
+Thank you so much. Love you `<3`
+
+### Menu UI Evolution
+<StepGallery layout="grid" steps={[
+  { img: '/vket-diary/img/web-103.webp', label: 'Version 1' },
+  { img: '/vket-diary/img/web-104.webp', label: 'Menu Collapsed to "…"' },
+  { img: '/vket-diary/img/web-105.webp', label: 'Version 2' },
+  { img: '/vket-diary/img/web-106.webp', label: 'Final Version' },
+]} />
+
+## Finally, the End of This Chapter
+
+Honestly, even after all of this,\
+I still wouldn't dare claim I truly understand the world of VRChat.
+
+Much of it, I only gradually came to understand by looking things up,\
+asking ChatGPT and Claude, and consulting the friend who teaches me programming.
+
+Along the way, I kept trying things, hunting down bugs, making changes, and testing again.
+
+Most of the time,\
+I genuinely had no idea what the correct answer was.
+
+All I could do was build the basic structure of a feature,\
+test it for real, and reason backwards from whatever problems appeared.
+
+Plenty of things I thought were finished ended up being torn down and rebuilt from scratch.\
+And through that cycle of trying, failing, and trying again — one by one, the features I wanted came to life.
+
+It may not be perfect yet, but it is, without question, something I poured my heart into.\
+~~Once again, for the record: this is absolutely not because I think stinky tofu is delicious.~~
+
+It started as just a sea slug you could sit on — and somehow I ended up stuffing all of this into it.
+
+You really worked hard, little tofu.\
+And so did I.

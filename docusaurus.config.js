@@ -20,8 +20,19 @@ const config = {
   onBrokenLinks: 'throw',
 
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'zh-Hant',
+    locales: ['zh-Hant', 'en', 'ja'],
+    localeConfigs: {
+      'zh-Hant': {
+        label: '繁體中文',
+      },
+      en: {
+        label: 'English',
+      },
+      ja: {
+        label: '日本語',
+      },
+    },
   },
 
   presets: [
@@ -68,6 +79,10 @@ const config = {
           src: 'img/icon_Anu_250.webp',
         },
         items: [
+          {
+            type: 'localeDropdown',
+            position: 'right',
+          },
           {
             href: 'https://github.com/TsukiyomiYana',
             position: 'right',

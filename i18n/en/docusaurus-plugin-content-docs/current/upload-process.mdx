@@ -1,0 +1,213 @@
+---
+sidebar_position: 7
+---
+
+import StepGallery from '@site/src/components/StepGallery';
+
+# Submission Pitfall Guide
+
+For the complete Item / Space submission flow,\
+the official tutorial video covers everything in detail: [Vket 2026 Summer 入稿ガイド](https://youtu.be/ghvxqGDO8j8?si=DCuy1AxRAPSwl_yW)
+
+From installing VRChat Creator Companion (VCC) and Unity,\
+downloading VketTools, creating the project, configuring the settings in Unity, and obtaining the authorization code,\
+all the way to completing the submission — the video explains it all.
+
+So for the basic steps: ~~future me, please go watch the video again yourself~~.
+
+This page instead focuses on the problems I ran into while actually submitting (Submit Exhibition)\
+and while checking my exhibit in the Preview World (下見ワールド), and how I handled them.
+
+## Lighting Issues in the Preview World
+
+The world I was assigned, "コクーン水族美術館 Redive", has fairly dark lighting overall.\
+~~The Vket team also made two rounds of fixes to the exhibit lighting and display issues, but the overall lighting was still a little dark.~~
+
+Even at a perfectly normal brightness in Unity,\
+once I entered the Preview World...
+
+it was way, WAY darker than expected.
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-028.webp', label: 'in Unity' },
+  { img: '/vket-diary/img/web-029.webp', label: 'in Preview World (VRChat)' },
+]} />
+
+I later learned from a senior student that\
+lilToon's **Base Settings** include several options that control how the model receives light.
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-033.webp', label: 'lilToon Default Base Settings' }
+]} />
+
+| Setting | Purpose |
+| ---------------------------------- | --------------------------------------------- |
+| Lower Brightness Limit | Controls the model's minimum brightness after lighting is applied. Raising it prevents the model from becoming too dark in dim areas. |
+| Upper Brightness Limit | Controls the model's maximum brightness after lighting is applied. Raising it preserves stronger lighting; lowering it helps prevent overexposure. |
+| Monochrome Lighting | Controls how much the light's color gets desaturated. Higher values reduce how strongly red/blue environmental light tints the model. |
+| Environment Strength on Shadow | Controls how much ambient light affects shadow colors. Higher values let shadows brighten with the surrounding light. |
+
+The brightness differences caused by these settings may not be fully reproduced in the Unity submission scene,\
+but once you're in the Preview World, they become extremely obvious...
+
+Here's a comparison of three configurations:
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-029.webp', label: 'lilToon Default' },
+{ img: '/vket-diary/img/web-030.webp', label: 'Emission Added: 0.2' },
+{ img: '/vket-diary/img/web-031.webp', label: 'Upper Brightness Limit : 1 → 10' },
+]} />
+
+In the end, all I could do was repeatedly tweak, re-upload, and test\
+until the brightness felt right for the venue's environment.
+
+> ※ The values above are only what worked for this particular venue — they won't fit every scene.
+> ※ The submission scene's lighting differs from the actual venue, so always judge the final result in the Preview World.\
+> ※ Pushing brightness values like Upper Brightness Limit too high can cause overexposure or display issues in brightly lit scenes — adjust to your venue.\
+> ※ After each re-submission, it takes roughly 5 hours to half a day for the updated model to appear in the Preview World. Actual times may vary by venue, update batch, or system conditions — this is just my personal experience.
+
+## Back Up Before You Submit (**Very Important**)
+
+After passing all the checks in VketTools...
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-036.webp', label: 'VketTools' },
+{ img: '/vket-diary/img/web-039.webp', label: 'Rule Check' },
+{ img: '/vket-diary/img/web-040.webp', label: 'Build Size Check' },
+{ img: '/vket-diary/img/web-041.webp', label: 'SetPass Check' },
+]} />
+
+...but BEFORE actually hitting submit, go back to VCC and press **Create Backup** first!
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-034.webp', label: 'VCC Backup' }
+]} />
+
+After pressing Create Backup,\
+the system creates a ZIP file stored in VCC's `ProjectBackups` folder.
+
+I happen to back up regularly anyway,\
+so I dodged this problem by pure luck.
+
+But here's what I found: after you hit "Submit" and VketTools finishes its chain of checks and processing,\
+the moment the "Submission completed" window pops up, the settings under your booth number are instantly cleared...
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-035.webp', label: 'Submission completed' }
+]} />
+
+<StepGallery steps={[
+{ img: '/vket-diary/img/web-042.webp', label: 'Inspector Settings Before Submission' },
+{ img: '/vket-diary/img/web-037.webp', label: 'Inspector Settings After Submission' },
+]} />
+
+If you didn't create a backup before submitting,\
+then the moment anything needs fixing and you have to re-submit, you'll be redoing every setting from scratch... Orz
+
+To restore the pre-submission state, use the backup you created earlier.
+
+Close Unity first, unzip the backup ZIP,\
+then copy its contents into the original project folder and overwrite the existing files. This restores your pre-submission settings.
+
+So please, seriously: **Backup first. Then submit.**
+
+> ※ I haven't confirmed with other exhibitors whether this happens to everyone — this is just what happened to me.
+
+## Pedestal Selection Problem
+
+When submitting an Item, there are two pedestal types to choose from:
+
+* Basic Pedestal (基本台座)
+* Small Item Pedestal (小物用台座)
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-032.webp', label: 'in Unity' },
+{ img: '/vket-diary/img/web-038.webp', label: 'Official Pedestal Example' },
+]} />
+
+I wanted the Stinky Tofu Sea Slug to stand out more on the booth,\
+so I planned to use the Small Item Pedestal — but no matter how many times I tried, it never worked. `(ノω<。)`
+
+Even after shrinking the object and re-importing, and confirming it fully fit inside the Small Item Pedestal's bounds,\
+it still sat stubbornly on the ground once inside the actual Vket booth.
+
+No matter what I adjusted, the result was always the Basic Pedestal... Orz\
+I gave up the struggle and finished the submission with the Basic Pedestal.
+
+I never did find the actual cause of this one.\
+If anyone knows the reason or a fix, please, please tell me. `(⁎>ㅿ<人`
+
+## Texture Settings & Compression
+### Texture Compression: Use Crunch Compression
+
+Remember to check whether **Use Crunch Compression** is enabled on your textures.
+
+Vket 2026 Summer has AssetBundle Build Size limits:\
+3.00 MB for Item exhibits, 10.00 MB for Space exhibits.
+
+You can check the AssetBundle file size after it is built with VketTools' Build Size Check.
+
+Among the various things that affect file size, textures are usually one of the most noticeable contributors.\
+Because of this, enabling or disabling Crunch Compression can make a very noticeable difference in the final file size.
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-047.webp', label: 'Without Crunch Compression' },
+{ img: '/vket-diary/img/web-048.webp', label: 'With Crunch Compression' },
+]} />
+
+That said, Crunch Compression is lossy — it can introduce block artifacts, blurriness, or detail loss.\
+So you'll need to weigh file size against visual quality based on your textures and how they actually look.
+
+### Source Image Size vs. Max Size
+
+Apart from the source image resolution, both textures below use identical Unity import settings.
+* 4096 px source image, with Unity's Max Size set to 2048 px
+* 2048 px source image, with Unity's Max Size also set to 2048 px
+
+Comparing them side by side, the version using a native 2048 px source\
+is clearly sharper than the 4096 px source downscaled by Unity to 2048 px.
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-045.webp', label: '4096 px → Unity 2048 px' },
+{ img: '/vket-diary/img/web-046.webp', label: '2048 px → Unity 2048 px' },
+]} />
+
+## Other Small Issues
+
+### FBX Mesh Settings
+
+Some VRChat SDK checks, scripts, or model features\
+need to read mesh data at runtime.
+
+So after importing an FBX, select the file,\
+and in the Inspector's Model tab,\
+check the settings for Read/Write Enabled and Legacy Blend Shape Normals.
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-050.webp', label: 'FBX Mesh Settings' }
+]} />
+
+For meshes used by Avatars, make sure Read/Write Enabled is ON —\
+otherwise you may get SDK check errors, features that do not work correctly, or failed uploads.
+
+Meshes used in Worlds don't always need it —\
+only enable it when a script or feature actually needs to read the mesh data.
+
+**Legacy Blend Shape Normals** affects how normals are computed for Blend Shapes.\
+There's no universally correct setting — judge by how the model actually renders.\
+If deformations produce shading or normal artifacts, try toggling it and compare.
+
+
+### Materials & SetPass Calls
+Transparent materials (2-Pass Transparent), fur materials (Fur), outlines (Outline), and similar effects\
+require additional rendering passes, so they also tend to increase SetPass Calls.
+
+For example, an object with a single material starts with 1 SetPass Call;\
+turn on Outline and — even though the material count hasn't changed — SetPass Calls become 2.
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-051.webp', label: 'Without Outline' },
+{ img: '/vket-diary/img/web-052.webp', label: 'With Outline' },
+]} />
+
+So don't judge by material count alone —\
+always verify the actual SetPass Calls with VketTools' SetPass Check.

@@ -1,0 +1,214 @@
+---
+sidebar_position: 7
+---
+
+import StepGallery from '@site/src/components/StepGallery';
+
+# 入稿つまずきガイド
+
+Item / Space の詳しい入稿手順については、\
+公式が非常に詳しいチュートリアル動画を用意してくれています：[Vket 2026 Summer 入稿ガイド](https://youtu.be/ghvxqGDO8j8?si=DCuy1AxRAPSwl_yW)
+
+VRChat Creator Companion (VCC) と Unity のインストールから、\
+VketTools のダウンロード、プロジェクト作成、Unity 内の設定と認可コードの取得、\
+そして入稿完了まで、動画で全部説明されています。
+
+なので基本操作については、~~未来の私へ、もう一度自分で動画を見てください~~。
+
+このページでは、実際に入稿 (Submit Exhibition) するとき、\
+そして下見ワールド (Preview World) で展示内容を確認するときにぶつかった問題とその対処を整理します。
+
+## 下見ワールド (Preview World) のライティング問題
+
+抽選で決まった「コクーン水族美術館 Redive」は、全体的に照明が暗めのワールドです。\
+~~公式も展示の照明と表示の問題について2回修正しましたが、それでも全体的にはまだ少し暗めでした。~~
+
+Unity では完全に正常な明るさに見えていても、\
+下見ワールドに入ってみると...
+
+想像を超える暗さでした。
+
+<StepGallery arrows={false} steps={[
+  { img: '/vket-diary/img/web-028.webp', label: 'in Unity' },
+  { img: '/vket-diary/img/web-029.webp', label: 'in Preview World (VRChat)' },
+]} />
+
+後で先輩に聞いて知ったのですが、\
+lilToon の **Base Settings** には、モデルが光を受けたときの見え方を調整できる設定がいくつかあります。
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-033.webp', label: 'lilToon Default Base Settings' }
+]} />
+
+| 設定 | 用途 |
+| ---------------------------------- | --------------------------------------------- |
+| Lower Brightness Limit | 光を受けたあとのモデルの最低輝度を制御します。数値を上げると、暗い場所でモデルが暗くなりすぎるのを防げます。 |
+| Upper Brightness Limit | 光を受けたあとのモデルの最高輝度を制御します。数値を上げると、より強い光の影響を残すことができ、下げると白飛びを防げます。 |
+| Monochrome Lighting | ライトの色の単色化の度合いを制御。数値を上げると、赤や青など強い環境光によるモデルの色被りを軽減できます。 |
+| Environment Strength on Shadow | 環境光が影色に与える影響を制御。数値が高いほど、影色が周囲の環境光で明るくなりやすくなります。 |
+
+これらの設定による明るさの違いは、Unity の入稿用シーンでは完全に再現できないこともありますが、\
+下見ワールドに入ると、非常にはっきり見えてきます...
+
+以下は3種類の設定の比較です：
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-029.webp', label: 'lilToon Default' },
+{ img: '/vket-diary/img/web-030.webp', label: 'Emission Added: 0.2' },
+{ img: '/vket-diary/img/web-031.webp', label: 'Upper Brightness Limit : 1 → 10' },
+]} />
+
+結局、何度も調整して再アップロードしてテストを繰り返し、\
+少しずつ会場の環境に合う明るさに近づけていくしかありませんでした。
+
+> ※ 上記の数値調整は今回の会場環境でテストした結果であり、すべてのシーンに当てはまるわけではありません。
+> ※ 入稿用シーンのライティングは実際の会場と異なるので、最終的な見た目は必ず下見ワールドで判断してください。\
+> ※ Upper Brightness Limit などの輝度関連の数値を上げすぎると、光の強いシーンで白飛びや表示異常の原因になることがあります。会場環境に合わせて調整しましょう。\
+> ※ 再入稿のたびに、更新されたモデルが下見ワールドに反映されるまで約5時間〜半日かかります。実際の時間は会場、更新バッチ、システム状況によって変わる可能性があり、ここでは私の体感のみを記録しています。
+
+## 入稿前に必ずバックアップ (**超重要**)
+
+VketTools ですべてのチェックを完了し、全部パスしたのを確認したら...
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-036.webp', label: 'VketTools' },
+{ img: '/vket-diary/img/web-039.webp', label: 'Rule Check' },
+{ img: '/vket-diary/img/web-040.webp', label: 'Build Size Check' },
+{ img: '/vket-diary/img/web-041.webp', label: 'SetPass Check' },
+]} />
+
+正式に入稿ボタンを押す前に、VCC に戻って **Create Backup** を押しましょう！
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-034.webp', label: 'VCC Backup' }
+]} />
+
+Create Backup を押すと、\
+ZIP ファイルが作成され、VCC の `ProjectBackups` フォルダに保存されます。
+
+私は普段から定期的にバックアップする習慣があったので、\
+幸運にもこの問題を回避できました。
+
+ただ、「入稿」を押して VketTools の一連のチェックと処理が終わり、\
+「入稿完了」のウィンドウが表示された瞬間、ブース番号の下にある設定が一瞬で消えることに気づきました...
+
+<StepGallery arrows={false} maxWidth="600px" steps={[
+  { img: '/vket-diary/img/web-035.webp', label: 'Submission completed' }
+]} />
+
+<StepGallery steps={[
+{ img: '/vket-diary/img/web-042.webp', label: 'Inspector Settings Before Submission' },
+{ img: '/vket-diary/img/web-037.webp', label: 'Inspector Settings After Submission' },
+]} />
+
+入稿前にバックアップを作っていなかった場合、\
+修正が必要になって再入稿するとなったとき、すべての設定を最初からやり直すことになります...Orz
+
+入稿前の状態に戻したいときは、事前に作成したバックアップを使います。
+
+先に Unity を閉じてから、バックアップの ZIP を解凍し、\
+中身を元のプロジェクトへコピーして既存のファイルを上書きすれば、入稿前の設定を取り戻せます。
+
+なので本当に、忘れずに：**まずバックアップ、それから入稿。**
+
+> ※ これが一般的に起こる問題かどうか、他の出展者には確認していません。私が実際に遭遇したケースの記録です。
+
+## 台座選択の問題
+
+Item 入稿時、台座は2種類から選べます：
+
+* 基本台座（Basic Pedestal）
+* 小物用台座（Small Item Pedestal）
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-032.webp', label: 'in Unity' },
+{ img: '/vket-diary/img/web-038.webp', label: 'Official Pedestal Example' },
+]} />
+
+スティウミをブースでもっと目立たせたくて、\
+小物用台座を使うつもりだったのですが、何度試しても成功しませんでした。`(ノω<。)`
+
+オブジェクトを縮小して再インポートし、小物用台座の範囲に完全に収まることを確認しても、\
+実際に Vket のブースに入ると、なぜかしっかり地面に鎮座している。
+
+どう調整しても、最終的に表示されるのは基本台座...Orz\
+あがくのをやめて、基本台座で入稿を完了しました。
+
+この問題、最後まで明確な原因が分かりませんでした。\
+原因や解決方法をご存知の方がいたら、ぜひ教えてください。`(⁎>ㅿ<人`
+
+## テクスチャ設定と圧縮
+### テクスチャ圧縮 : Use Crunch Compression
+
+テクスチャで **Use Crunch Compression** が有効になっているか確認しましょう。
+
+Vket 2026 Summer では AssetBundle の Build Size に上限があります：\
+Item 出展は 3.00 MB、Space 出展は 10.00 MB。
+
+AssetBundle をビルドしたあとのファイルサイズは、VketTools の Build Size Check で確認できます。
+
+ファイルサイズに影響するさまざまな要素の中でも、テクスチャは特に影響が大きい部分です。\
+そのため、Crunch Compression の有無による最終的なファイルサイズの差も非常にはっきり出ます。
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-047.webp', label: 'Without Crunch Compression' },
+{ img: '/vket-diary/img/web-048.webp', label: 'With Crunch Compression' },
+]} />
+
+ただし、Crunch Compression は非可逆圧縮なので、ブロックノイズやぼやけ、\
+ディテールの損失が起きる可能性があります。\
+テクスチャの内容と実際の表示を見ながら、ファイルサイズと画質のバランスを取る必要があります。
+
+### 元画像サイズと Max Size
+
+元画像の解像度以外、下記2枚のテクスチャの Unity インポート設定は完全に同じです。
+* 4096 px の元画像を使用し、Unity の Max Size を 2048 px に設定
+* 2048 px の元画像を使用し、Unity の Max Size を同じく 2048 px に設定
+
+実際に比較すると、元から 2048 px の画像を使ったバージョンのほうが、\
+4096 px の元画像を Unity で 2048 px に縮小したバージョンより明らかにシャープです。
+
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-045.webp', label: '4096 px → Unity 2048 px' },
+{ img: '/vket-diary/img/web-046.webp', label: '2048 px → Unity 2048 px' },
+]} />
+
+## その他の小さな問題
+
+### FBX モデルの Mesh 設定
+
+一部の VRChat SDK チェック、スクリプト、モデルの機能は、\
+実行時に Mesh データを読み取る必要があります。
+
+そのため、FBX をインポートしたらファイルを選択し、\
+Inspector の Model タブで、\
+Read/Write Enabled と Legacy Blend Shape Normals の設定を確認しましょう。
+
+<StepGallery arrows={false} maxWidth="500px" steps={[
+  { img: '/vket-diary/img/web-050.webp', label: 'FBX Mesh Settings' }
+]} />
+
+Avatar 用の Mesh の場合、Read/Write Enabled が ON になっていることを確認してください。\
+OFF だと SDK チェックのエラー、機能の不具合、アップロード失敗の原因になることがあります。
+
+World 用の Mesh は必ずしも ON にする必要はなく、\
+スクリプトや機能が Mesh データを読み取る場合のみ有効にすれば OK です。
+
+**Legacy Blend Shape Normals** は Blend Shape の法線計算方法に影響します。\
+決まった正解はなく、モデルの実際の表示結果で判断します。\
+変形後に影や法線の異常が出る場合は、設定を切り替えて効果を比較してみましょう。
+
+
+### マテリアルと SetPass Calls
+透明マテリアル（2-Pass Transparent）、ファーマテリアル（Fur）、アウトライン（Outline）などのエフェクトは、\
+追加のレンダリング処理が必要になるため、通常 SetPass Calls も増加します。
+
+例えば、マテリアル1つだけのオブジェクトの SetPass Calls は元々 1 ですが、\
+Outline を有効にすると、マテリアル数が変わらなくても SetPass Calls は 2 になります。
+<StepGallery arrows={false} steps={[
+{ img: '/vket-diary/img/web-051.webp', label: 'Without Outline' },
+{ img: '/vket-diary/img/web-052.webp', label: 'With Outline' },
+]} />
+
+なので、マテリアルの数だけで判断せず、\
+必ず VketTools の SetPass Check で実際の SetPass Calls を確認しましょう。
